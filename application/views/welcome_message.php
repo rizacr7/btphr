@@ -1,100 +1,147 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Welcome to CodeIgniter</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/style_login.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-	<style type="text/css">
-
-	::selection { background-color: #E13300; color: white; }
-	::-moz-selection { background-color: #E13300; color: white; }
-
-	body {
-		background-color: #fff;
-		margin: 40px;
-		font: 13px/20px normal Helvetica, Arial, sans-serif;
-		color: #4F5155;
-	}
-
-	a {
-		color: #003399;
-		background-color: transparent;
-		font-weight: normal;
-		text-decoration: none;
-	}
-
-	a:hover {
-		color: #97310e;
-	}
-
-	h1 {
-		color: #444;
-		background-color: transparent;
-		border-bottom: 1px solid #D0D0D0;
-		font-size: 19px;
-		font-weight: normal;
-		margin: 0 0 14px 0;
-		padding: 14px 15px 10px 15px;
-	}
-
-	code {
-		font-family: Consolas, Monaco, Courier New, Courier, monospace;
-		font-size: 12px;
-		background-color: #f9f9f9;
-		border: 1px solid #D0D0D0;
-		color: #002166;
-		display: block;
-		margin: 14px 0 14px 0;
-		padding: 12px 10px 12px 10px;
-	}
-
-	#body {
-		margin: 0 15px 0 15px;
-		min-height: 96px;
-	}
-
-	p {
-		margin: 0 0 10px;
-		padding:0;
-	}
-
-	p.footer {
-		text-align: right;
-		font-size: 11px;
-		border-top: 1px solid #D0D0D0;
-		line-height: 32px;
-		padding: 0 10px 0 10px;
-		margin: 20px 0 0 0;
-	}
-
-	#container {
-		margin: 10px;
-		border: 1px solid #D0D0D0;
-		box-shadow: 0 0 8px #D0D0D0;
-	}
-	</style>
 </head>
 <body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <!-- <div class="company-logo">
+                    <div class="logo-icon">🏢</div>
+                </div> -->
+                <h2>Welcome Back</h2>
+                <p>Please sign in to your corporate account</p>
+            </div>
+            
+            <form class="login-form" id="loginForm" novalidate>
+                
 
-<div id="container">
-	<h1>Welcome to CodeIgniter!</h1>
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="text" id="username" name="username" required>
+                        <label for="username">Username</label>
+                        <span class="input-border"></span>
+                    </div>
+                    <span class="error-message" id="usernameError"></span>
+                </div>
 
-	<div id="body">
-		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
+                <div class="form-group">
+                    <div class="input-wrapper password-wrapper">
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                        <label for="password">Password</label>
+                        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+                            <span class="toggle-icon"></span>
+                        </button>
+                        <span class="input-border"></span>
+                    </div>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
 
-		<p>If you would like to edit this page you'll find it located at:</p>
-		<code>application/views/welcome_message.php</code>
+                <div class="form-options">
+                    <div class="remember-wrapper">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember" class="checkbox-label">
+                            <span class="checkbox-custom"></span>
+                            Keep me signed in
+                        </label>
+                    </div>
+                </div>
 
-		<p>The corresponding controller for this page is found at:</p>
-		<code>application/controllers/Welcome.php</code>
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader"></span>
+                </button>
 
-		<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="userguide3/">User Guide</a>.</p>
-	</div>
+                <div id="alertMessage" class="alert-message" style="display:none;"></div>
+                
+            </form>
 
-	<p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds. <?php echo  (ENVIRONMENT === 'development') ?  'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>
-</div>
+        </div>
+    </div>
+
+    <style>
+    .alert-message {
+        margin-top: 15px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        display: none;
+        text-align: center;
+    }
+    .alert-message.error {
+        background-color: #ffe5e5;
+        color: #c00;
+        border: 1px solid #ffb3b3;
+    }
+    .alert-message.success {
+        background-color: #e6ffed;
+        color: #0a8020;
+        border: 1px solid #a2f0b1;
+    }
+    .alert-message .icon {
+        margin-right: 5px;
+    }
+    </style>
+
+    <script src="../../shared/js/form-utils.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/script.js"></script>
+
+    <script>
+    $(document).ready(function() {
+         $("#loginForm").on("submit", function(e) {
+            e.preventDefault();
+
+            let formData = {
+                username: $("#username").val(),
+                password: $("#password").val(),
+                remember: $("#remember").is(":checked") ? 1 : 0
+            };
+
+            $(".btn-loader").show();
+            $(".btn-text").text("Signing in...");
+            $("#alertMessage").hide().removeClass("error success");
+
+            $.ajax({
+                url: "<?php echo base_url('index.php/Welcome/login'); ?>",
+                type: "POST",
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    $(".btn-loader").hide();
+                    $(".btn-text").text("Sign In");
+
+                    if (response.status === "success") {
+                        $("#successMessage").fadeIn();
+                        $("#alertMessage").hide();
+                        setTimeout(function() {
+                            window.location.href = response.redirect;
+                        }, 1500);
+                    } else {
+                        // tampilkan alert error
+                        $("#alertMessage")
+                            .addClass("error")
+                            .html('<span class="icon">⚠️</span> ' + response.message)
+                            .fadeIn();
+                    }
+                },
+                error: function() {
+                    $(".btn-loader").hide();
+                    $(".btn-text").text("Sign In");
+                    $("#alertMessage")
+                        .addClass("error")
+                        .html('<span class="icon">❌</span> Terjadi kesalahan koneksi.')
+                        .fadeIn();
+                }
+            });
+        });
+    });
+    </script>
 
 </body>
 </html>
