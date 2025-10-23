@@ -149,4 +149,14 @@ class Master_model extends CI_Model  {
 		$kode_baru = str_pad((int)$max_kode + 1, 4, "0", STR_PAD_LEFT);
 		return $kode_baru;
 	}
+
+	function get_supplier_select2($searchTerm) {
+		$this->db->select('kd_vendor as id, nm_vendor as text');
+		$this->db->from('m_vendor');
+		$this->db->like('nm_vendor', $searchTerm);
+		$this->db->or_like('kd_vendor', $searchTerm);
+		$this->db->limit(10);
+		$query = $this->db->get();
+		return $query->result();
+	}
 }

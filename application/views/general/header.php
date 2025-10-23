@@ -40,6 +40,8 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/demo.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
 
     <!--   Core JS Files   -->
     <script src="<?php echo base_url(); ?>assets/js/core/jquery-3.7.1.min.js"></script>
@@ -56,10 +58,12 @@
     <script src="<?php echo base_url(); ?>assets/js/plugin/chart-circle/circles.min.js"></script>
 
     <!-- Datatables -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/plugin/datatables/dataTables.select.min.js"></script>
-     
+    
     <!-- Bootstrap Notify -->
     <script src="<?php echo base_url(); ?>assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 
