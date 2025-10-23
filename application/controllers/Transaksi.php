@@ -40,6 +40,13 @@ class Transaksi extends CI_Controller {
         $this->load->view('general/footer');
     }
 
+	function datasewa(){
+        $this->load->view('general/header');
+        $this->load->view('general/sidebar');
+        $this->load->view('transaksi/data_sewa');
+        $this->load->view('general/footer');
+    }
+
 	function koreksi_spk(){
 		$data=array(
 			'bukti'=>$this->input->get('bukti')
@@ -134,7 +141,7 @@ class Transaksi extends CI_Controller {
 	}
 
 	function tab_spk(){
-		 echo "<table id='table_spk' class='table table-bordered dt-responsive' width='100%'>
+		 echo "<table id='table_spk' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>
 			<tr class='info'>
 				<th>No.</th>
@@ -217,13 +224,13 @@ class Transaksi extends CI_Controller {
 		</table>";
 
 		echo "
-		<table class='table table-hover table-bordered'>
+		<table class='table table-bordered table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<tr>
-			<td width=30 style=\"text-align: center;background-color:#DE2124;\"><b>No</b></td>
-			<td width=150 style=\"text-align: center;background-color:#DE2124;\"><b>Kendaraan</b></td>
-			<td width=100 style=\"text-align: center;background-color:#DE2124;\"><b>Nopol</b></td>
-			<td width=110 style=\"text-align: center;background-color:#DE2124;\"><b>Harga Sewa</b></td>
-			<td width=110 style=\"text-align: center;background-color:#DE2124;\"><b>Status Sewa</b></td>
+			<td width=30 style=\"text-align: center;\"><b>No</b></td>
+			<td width=150 style=\"text-align: center;\"><b>Kendaraan</b></td>
+			<td width=100 style=\"text-align: center;\"><b>Nopol</b></td>
+			<td width=110 style=\"text-align: center;\"><b>Harga Sewa</b></td>
+			<td width=110 style=\"text-align: center;\"><b>Status Sewa</b></td>
 		</tr>";
 		
 		$detail = "SELECT a.*,b.nm_kendaraan FROM t_spk_detail a 
@@ -286,7 +293,7 @@ class Transaksi extends CI_Controller {
 
 		$data_detail = $this->transaksi_model->get_spk_detail($no_bukti_spk);
 
-		echo "<table id='table_spk_detail' class='table table-bordered dt-responsive' width='100%'>
+		echo "<table id='table_spk_detail' class='table table-bordered table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>
 			<tr class='info'>
 				<th>No.</th>
@@ -295,13 +302,24 @@ class Transaksi extends CI_Controller {
 				<th>Nama Kendaraan</th>
 				<th>Nopol</th>
 				<th>Harga Sewa</th>
-				<th>Status</th>
+				<th>Status Sewa</th>
 			</tr>
 		</thead>
 		<tbody>";
 		$no = 1;
 		foreach ($data_detail as $key => $value) {
 			
+			if($value->flag_stop_sewa == 0){
+				$status = "<button type='button' class='btn btn-icon btn-round btn-success'>
+					<i class='fa fa-check-square'></i>
+				</button>";
+			}
+			else{
+				$status = "<button type='button' class='btn btn-icon btn-round btn-danger'>
+					<i class='fa fa-stop-circle'></i>
+				</button>";
+			}
+
 			echo "<tr>
 				<td>" . $no . "</td>
 				<td style='display:none'>" . $value->id_spk . "</td>
@@ -309,7 +327,7 @@ class Transaksi extends CI_Controller {
 				<td>" . $value->nm_kendaraan . "</td>
 				<td>" . $value->nopol . "</td>
 				<td style='text-align: right'>" . $this->func_global->duit($value->hrg_sewa) . "</td>
-				<td></td>
+				<td style='text-align: center'>".$status."</td>
 			</tr>";
 			$no++;
 		}
@@ -385,6 +403,96 @@ class Transaksi extends CI_Controller {
 		);
 		$this->db->where('no_bukti_spk', $no_bukti_spk);
 		$this->db->update('t_spk', $data);
+
+		echo 1; // Berhasil
+	}
+
+	//---data sewa kendaraan---//
+	function tab_sewakendaraan(){
+		 echo "<table id='table_sewa' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
+		<thead>
+			<tr class='info'>
+				<th>No.</th>
+				<th style='display:none'>Id</th>
+				<th>Kendaraan</th>
+				<th>Nopol</th>
+				<th>Vendor</th>
+				<th>Hrg.Sewa</th>
+				<th>Dpp</th>
+				<th>PPn</th>
+				<th>Status Sewa</th>
+				<th>Tgl.Penghentian</th>
+			</tr>
+		</thead>
+		<tbody>";
+        $no = 1;
+        $data = $this->transaksi_model->get_data_sewa("", "", "", 0, 0);
+        foreach ($data->result_array() as $key => $value) {
+			
+			if($value['flag_stop_sewa'] == 0){
+				$status = "<button type='button' class='btn btn-icon btn-round btn-success'>
+					<i class='fa fa-check-square'></i>
+				</button>";
+			}
+			else{
+				$status = "<button type='button' class='btn btn-icon btn-round btn-danger'>
+					<i class='fa fa-stop-circle'></i>
+				</button>";
+			}
+
+            echo "<tr>
+				<td>" . $no . "</td>
+				<td style='display:none'>" . $value['id_spk'] . "</td>
+				<td>" . $value['nm_kendaraan'] . "</td>
+				<td>" . $value['nopol'] . "</td>
+				<td>" . $value['nm_vendor'] . "</td>
+				<td style='text-align:right'>" . $this->func_global->duit($value['hrg_sewa']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->duit($value['dpp_sewa']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->duit($value['ppn_sewa']) . "</td>
+				<td style='text-align:center'>" . $status . "</td>
+				<td>" . $this->func_global->dsql_tgl($value['tgl_stop']) . "</td>
+			</tr>";
+            $no++;
+        }
+
+        echo "</tbody>
+		</table>
+		<style>
+			.selected td {
+				background-color: #c6ccdcff; !important;
+			}
+		</style>
+		<script>
+			$('#table_sewa').dataTable({
+				responsive:'true',
+				select: {style: 'single'}
+			});
+		</script>";
+	}
+
+	function update_stopsewa(){
+		$id_spk = $this->input->post('id_spk');
+		$tgl_stop = $this->input->post('tgl_stop');
+
+		$data = array(
+			'flag_stop_sewa' => 1,
+			'tgl_stop' => $this->func_global->tgl_dsql($tgl_stop)
+		);
+		$this->db->where('id_spk', $id_spk);
+		$this->db->update('t_spk_detail', $data);
+
+		echo 1; // Berhasil
+	}
+
+	function batal_stopsewa(){
+		$id_spk = $this->input->post('id_spk');
+
+		$data = array(
+			'flag_stop_sewa' => 0,
+			'tgl_stop' => null
+		);
+		$this->db->where('id_spk', $id_spk);
+		$this->db->update('t_spk_detail', $data);
 
 		echo 1; // Berhasil
 	}

@@ -55,9 +55,9 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="table-responsive">
                 <i>Data Kendaraan</i>
-                <table id="datakendaraan" width="auto" class="table table-bordered table-striped">
+                <table id="datakendaraan" width="auto" class="table table-bordered table-head-bg-primary table-bordered-bd-primary mt-4">
                   <thead>
-                  <tr style="background-color:#e9e9e9">
+                  <tr>
                     <th width="75" style="text-align: center">Kode Kendaraan</th>
                     <th width="65" style="text-align: center">Nama Kendaraan</th>
                     <th width="55" style="text-align: center">Nopol</th>

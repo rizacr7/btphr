@@ -41,7 +41,7 @@ class Master extends CI_Controller {
 
 
     function tab_kendaraan(){
-        echo "<table id='table_kendaraan' class='table table-bordered dt-responsive' width='100%'>
+        echo "<table id='table_kendaraan' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>
 			<tr class='info'>
 				<th>No.</th>
@@ -84,7 +84,7 @@ class Master extends CI_Controller {
     }
 
 	function tab_vendor(){
-        echo "<table id='table_vendor' class='table table-striped table-bordered' width='100%'>
+        echo "<table id='table_vendor' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>
 			<tr class='info'>
 				<th>No.</th>

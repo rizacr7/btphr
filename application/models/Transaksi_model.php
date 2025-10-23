@@ -72,4 +72,30 @@ class Transaksi_model extends CI_Model  {
 		$query = $this->db->query("SELECT a.*,b.nm_kendaraan FROM t_spk_detail a left join m_kendaraan b on a.kd_kendaraan = b.kd_kendaraan WHERE a.no_bukti_spk = '$no_bukti_spk'");
 		return $query->result();
 	}
+
+	function get_data_sewa($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
+        $query_select = ($numrows) ? " count(*) numrows " : " a.*,b.`nm_kendaraan`,d.`nm_vendor` ";
+
+        if (is_array($cari) and $cari['value'] != "") {
+            $cari_field = isset($cari['field']) ? $cari['field'] : array("a.nopol", "a.nm_vendor");
+
+            $isi_where = implode(" like '%" . $cari['value'] . "%' or ", $cari_field);
+
+            $query_where = " and (" . $isi_where . " like '%" . $cari['value'] . "%' ) ";
+        } else {
+            $query_where = "";
+        }
+		
+        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by c.tgl_spk desc";
+
+        $query_limit = ($limit) ? " limit " . $offset . ", " . $limit : "";
+
+		$query = "select " . $query_select . " FROM t_spk_detail a 
+		LEFT JOIN m_kendaraan b ON a.`kd_kendaraan` = b.`kd_kendaraan`
+		LEFT JOIN t_spk c ON a.`no_bukti_spk` = c.`no_bukti_spk`
+		LEFT JOIN m_vendor d ON c.`kd_vendor` = d.`kd_vendor`
+		WHERE c.`is_del` = 0 AND c.`flag_spk` = 1 " . $query_where . " " . $query_sort . " " . $query_limit;
+       
+        return $this->db->query($query);
+    }
 }

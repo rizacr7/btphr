@@ -6,9 +6,9 @@
   </div>
   <div class="card">
     <div class="card-header">
-      	<button class="btn btn-primary btn-sm" onclick="viewdt()">View</button>
-        <button class="btn btn-warning btn-sm" onclick="edit()">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="hapus()">Delete</button>
+      	<button class="btn btn-primary" onclick="viewdt()">View</button>
+        <button class="btn btn-warning" onclick="edit()">Edit</button>
+        <button class="btn btn-danger" onclick="hapus()">Delete</button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
