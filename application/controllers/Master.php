@@ -23,6 +23,10 @@ class Master extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('master_model');
+
+		if($this->session->userdata('role') == ""){
+			redirect('Welcome/index');
+		}
     }
 
     function masterkendaraan(){

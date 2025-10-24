@@ -24,6 +24,10 @@ class Transaksi extends CI_Controller {
         $this->load->helper('url');
         $this->load->model('transaksi_model');
 		$this->load->model('func_global');
+
+		if($this->session->userdata('role') == ""){
+			redirect('Welcome/index');
+		}
     }
 
     function spk_kendaraan(){

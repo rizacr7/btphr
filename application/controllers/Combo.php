@@ -60,4 +60,54 @@ class Combo extends CI_Controller {
 
 		echo json_encode($data);
 	}
+
+	function get_role_select2()
+	{
+		$term = $this->input->get('term'); // ambil input dari Select2
+		$this->db->like('level', $term);
+		$query = $this->db->get('m_level'); // sesuaikan nama tabel
+
+		$data = [];
+		foreach ($query->result() as $row) {
+			$data[] = [
+				'id' => $row->level, // value yang dikirim ke form
+				'text' => $row->level // teks yang tampil
+			];
+		}
+
+		echo json_encode($data);
+	}
+
+	function get_header_select2()
+	{
+		$term = $this->input->get('term'); // ambil input dari Select2
+		$this->db->like('judul_head', $term);
+		$query = $this->db->get('m_menu_head'); // sesuaikan nama tabel
+
+		$data = [];
+		foreach ($query->result() as $row) {
+			$data[] = [
+				'id' => $row->id_head, // value yang dikirim ke form
+				'text' => $row->judul_head // teks yang tampil
+			];
+		}
+
+		echo json_encode($data);
+	}
+
+	function get_menu_select2(){
+		$term = $this->input->get('term'); // ambil input dari Select2
+		$this->db->like('judul_sub', $term);
+		$query = $this->db->get('m_menu_sub'); // sesuaikan nama tabel
+
+		$data = [];
+		foreach ($query->result() as $row) {
+			$data[] = [
+				'id' => $row->id_sub, // value yang dikirim ke form
+				'text' => $row->judul_sub // teks yang tampil
+			];
+		}
+
+		echo json_encode($data);
+	}
 }

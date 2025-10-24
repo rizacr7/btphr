@@ -3,12 +3,12 @@
         <div class="sidebar-logo">
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
-            <a href="../index.html" class="logo">
+            <a href="#" class="logo">
               <img
-                src="<?php echo base_url(); ?>assets/img/kaiadmin/logo_light.svg"
+                src="<?php echo base_url(); ?>assets/img/btp_logo.png"
                 alt="navbar brand"
                 class="navbar-brand"
-                height="20"
+                height="40"
               />
             </a>
             <div class="nav-toggle">
@@ -100,12 +100,12 @@
           <div class="main-header-logo">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
-              <a href="../index.html" class="logo">
+              <a href="#" class="logo">
                 <img
-                  src="<?php echo base_url(); ?>assets/img/kaiadmin/logo_light.svg"
+                  src="<?php echo base_url(); ?>assets/img/btp_logo.png"
                   alt="navbar brand"
                   class="navbar-brand"
-                  height="20"
+                  height="40"
                 />
               </a>
               <div class="nav-toggle">
@@ -130,20 +130,10 @@
               <nav
                 class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
               >
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <button type="submit" class="btn btn-search pe-1">
-                      <i class="fa fa-search search-icon"></i>
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Search ..."
-                    class="form-control"
-                  />
-                </div>
               </nav>
-
+              <span class="navbar-brand">
+                <span class="fw-bold"><font color="white">Fleet Management System</font></span>
+              </span>
               <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li
                   class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
@@ -179,39 +169,15 @@
                     aria-expanded="false"
                   >
                     <div class="avatar-sm">
-                      <img
-                        src="<?php echo base_url(); ?>assets/img/profile.jpg"
-                        alt="..."
-                        class="avatar-img rounded-circle"
-                      />
+                      <i class="fa fa-user-circle fa-2x" style="color:white;"></i>
                     </div>
                     <span class="profile-username">
                       <span class="op-7"><?php echo $this->session->userdata('username')?></span>
-                      <span class="fw-bold"><?php echo $this->session->userdata('nama')?></span>
+                      <span class="fw-bold"> - <?php echo $this->session->userdata('nama')?></span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
                     <div class="dropdown-user-scroll scrollbar-outer">
-                      <li>
-                        <div class="user-box">
-                          <div class="avatar-lg">
-                            <img
-                              src="<?php echo base_url(); ?>assets/img/profile.jpg"
-                              alt="image profile"
-                              class="avatar-img rounded"
-                            />
-                          </div>
-                          <div class="u-text">
-                            <h4>Hizrian</h4>
-                            <p class="text-muted">hello@example.com</p>
-                            <a
-                              href="profile.html"
-                              class="btn btn-xs btn-secondary btn-sm"
-                              >View Profile</a
-                            >
-                          </div>
-                        </div>
-                      </li>
                       <li>
                         <a class="dropdown-item" href="<?php echo base_url(); ?>index.php/welcome/logout">Logout</a>
                       </li>

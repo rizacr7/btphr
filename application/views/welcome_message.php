@@ -12,16 +12,14 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <!-- <div class="company-logo">
-                    <div class="logo-icon">🏢</div>
-                </div> -->
-                <h2>Welcome Back</h2>
+                <div class="company-logo">
+                    <img src="<?php echo base_url(); ?>assets/img/btplogo.png" alt="Company Logo" height="70"/>
+                </div>
+                <h3>Fleet Management System</h3>
                 <p>Please sign in to your corporate account</p>
             </div>
             
             <form class="login-form" id="loginForm" novalidate>
-                
-
                 <div class="form-group">
                     <div class="input-wrapper">
                         <input type="text" id="username" name="username" required>
