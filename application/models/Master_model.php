@@ -67,8 +67,11 @@ class Master_model extends CI_Model  {
     }
 
 	function insert_kendaraan($param) {
+		$tanggal = date("Y-m-d");
+		$kodebukti = $this->generate_kode_kendaraan(array('tanggal' => $tanggal, 'kd' => 'K'));
+
 		$data = array(
-				'kd_kendaraan' =>$param['kd_kendaraan'],
+				'kd_kendaraan' =>$kodebukti,
 				'nm_kendaraan' => $param['nm_kendaraan'],
 				'jns_kend' => $param['jns_kend'],
 				'bbm' => $param['bbm']
@@ -134,7 +137,7 @@ class Master_model extends CI_Model  {
 		$thn = substr($tanggal, 2, 2);
 		$bln = substr($tanggal, 5, 2);
 
-		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_vendor,7,4)),0) AS max_kode FROM m_vendor WHERE SUBSTRING(kd_vendor,3,2)='$thn' AND SUBSTRING(kd_vendor,5,2)='$bln' AND kd_vendor LIKE '$kd%'");
+		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_vendor,6,4)),0) AS max_kode FROM m_vendor WHERE kd_vendor LIKE '$kd%'");
 		$row = $query->row();
 		$max_kode = $row->max_kode;
 		$kode_baru = str_pad((int)$max_kode + 1, 4, "0", STR_PAD_LEFT);
@@ -142,12 +145,19 @@ class Master_model extends CI_Model  {
 		return $kodebukti;
 	}
 
-	function generate_kode_kendaraan() {
-		$query = $this->db->query("SELECT IFNULL(MAX(kd_kendaraan),0) AS max_kode FROM m_kendaraan");
+	function generate_kode_kendaraan($param) {
+		$tanggal = $param['tanggal'];
+		$kd = $param['kd'];
+
+		$thn = substr($tanggal, 2, 2);
+		$bln = substr($tanggal, 5, 2);
+
+		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_kendaraan,4,4)),0) AS max_kode FROM m_kendaraan WHERE kd_kendaraan LIKE '$kd%'");
 		$row = $query->row();
 		$max_kode = $row->max_kode;
 		$kode_baru = str_pad((int)$max_kode + 1, 4, "0", STR_PAD_LEFT);
-		return $kode_baru;
+		$kodebukti = $kd . $thn . $kode_baru;
+		return $kodebukti;
 	}
 
 	function get_supplier_select2($searchTerm) {
