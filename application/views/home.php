@@ -22,16 +22,7 @@
                 </div>
               </div>
               <div class="col col-stats ms-3 ms-sm-0">
-                <?php
-                  $query = $this->db->query("SELECT * FROM t_spk a 
-                  LEFT JOIN t_spk_detail b ON a.no_bukti_spk = b.no_bukti_spk
-                  WHERE a.flag_spk = 1 AND a.is_del = 0 AND b.flag_stop_sewa = 0");
-                  $jumlah_kendaraan = $query->num_rows();
-                ?>
-                <div class="numbers">
-                  <p class="card-category">Data Kendaraan</p>
-                  <h4 class="card-title"><?php echo $jumlah_kendaraan?></h4>
-                </div>
+               
               </div>
             </div>
           </div>

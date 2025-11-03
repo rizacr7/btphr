@@ -29,10 +29,10 @@ class Master extends CI_Controller {
 		}
     }
 
-    function masterkendaraan(){
+    function masterjabatan(){
         $this->load->view('general/header');
         $this->load->view('general/sidebar');
-        $this->load->view('master/mst_kendaraan');
+        $this->load->view('master/mst_jabatan');
         $this->load->view('general/footer');
     }
 

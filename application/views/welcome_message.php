@@ -15,7 +15,7 @@
                 <div class="company-logo">
                     <img src="<?php echo base_url(); ?>assets/img/btplogo.png" alt="Company Logo" height="70"/>
                 </div>
-                <h3>Fleet Management System</h3>
+                <h3>Human Resource Information System</h3>
                 <p>Please sign in to your corporate account</p>
             </div>
             
