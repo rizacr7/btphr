@@ -23,6 +23,7 @@ class Master extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('master_model');
+		$this->load->model('func_global');
 
 		if($this->session->userdata('role') == ""){
 			redirect('Welcome/index');
@@ -44,30 +45,28 @@ class Master extends CI_Controller {
     }
 
 
-    function tab_kendaraan(){
-        echo "<table id='table_kendaraan' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
+    function tab_jabatan(){
+        echo "<table id='table_jabatan' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>
 			<tr class='info'>
 				<th>No.</th>
 				<th style='display:none'>Id</th>
-				<th>Kode Kendaraan</th>
-				<th>Nama Kendaraan</th>
-				<th>Jenis</th>
-				<th>Bahan Bakar</th>
+				<th>Kode Jabatan</th>
+				<th>Nama Jabatan</th>
+				<th>Tj.Jabatan</th>
 			</tr>
 		</thead>
 		<tbody>";
         $no = 1;
-        $data = $this->master_model->get_data_kendaraan("", "", "", 0, 0);
+        $data = $this->master_model->get_data_jabatan("", "", "", 0, 0);
         foreach ($data->result_array() as $key => $value) {
 			
             echo "<tr>
 				<td>" . $no . "</td>
-				<td style='display:none'>" . $value['id_kendaraan'] . "</td>
-				<td>" . $value['kd_kendaraan'] . "</td>
-				<td>" . $value['nm_kendaraan'] . "</td>
-				<td>" . $value['jns_kend'] . "</td>
-				<td>" . $value['bbm'] . "</td>
+				<td style='display:none'>" . $value['id_jab'] . "</td>
+				<td>" . $value['kd_jab'] . "</td>
+				<td>" . $value['nm_jab'] . "</td>
+				<td style='text-align:right'>" . $this->func_global->duit($value['tj_jab']) . "</td>
 			</tr>";
             $no++;
         }
@@ -80,7 +79,7 @@ class Master extends CI_Controller {
 			}
 		</style>
 		<script>
-			$('#table_kendaraan').dataTable({
+			$('#table_jabatan').dataTable({
 				responsive:'true',
 				select: {style: 'single'}
 			});
@@ -138,32 +137,35 @@ class Master extends CI_Controller {
 		</script>";
     }
 
-	function simpan_kendaraan() {
-		$id_kendaraan = $this->input->post('id_kendaraan');
-		$kd_kendaraan = $this->input->post('kd_kendaraan');
-		$nm_kendaraan = $this->input->post('nm_kendaraan');
-		$jns_kend = $this->input->post('jns_kend');
-		$bbm = $this->input->post('bbm');
-
-		// buatkan kd_kendaraan generate otomatis
-		$kd_kendaraan = "K" . str_pad($this->master_model->get_data_kendaraan("", "id_kendaraan", "desc", 0, 1, 0)->num_rows() + 1, 4, "0", STR_PAD_LEFT);
-
+	function simpan_jabatan() {
+		$id_jab = $this->input->post('id_jab');
+		$kd_jab = $this->input->post('kd_jab');
+		$nm_jab = $this->input->post('nm_jab');
+		$tj_jab = $this->input->post('tj_jab');
+		
 		$param = array(
-			'kd_kendaraan' => $kd_kendaraan,
-			'nm_kendaraan' => $nm_kendaraan,
-			'jns_kend' => $jns_kend,
-			'bbm' => $bbm,
-			'id_kendaraan' => $id_kendaraan
+			'kd_jab' => $kd_jab,
+			'nm_jab' => $nm_jab,
+			'tj_jab' => $tj_jab,
+			'id_jab' => $id_jab
 		);
 
-		if ($id_kendaraan == "") {
-			// insert
-			$this->master_model->insert_kendaraan($param);
-			echo "Data Kendaraan berhasil ditambahkan.";
+		if ($id_jab == "") {
+			//--cek kd jab ---
+			$queryCek = "SELECT * FROM m_jabatan WHERE kd_jab = '$kd_jab'";
+			$rdt = $this->db->query($queryCek)->num_rows();
+			if($rdt == 0){
+				// insert
+				$this->master_model->insert_jabatan($param);
+				echo "success";
+			}
+			else{
+				echo "erorr";
+			}
 		} else {
 			// update
-			$this->master_model->update_kendaraan($param);
-			echo "Data Kendaraan berhasil diupdate.";
+			$this->master_model->update_jabatan($param);
+			echo "Data Jabatan berhasil diupdate.";
 		}
 	}
 

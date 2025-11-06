@@ -5,6 +5,7 @@ class Master_model extends CI_Model  {
 	
 	public function __construct() {
         $this->load->database();
+		$this->load->model('func_global');
     }
 	/**
 	 * Index Page for this controller.
@@ -21,6 +22,28 @@ class Master_model extends CI_Model  {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
+
+	  function get_data_jabatan($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
+        $query_select = ($numrows) ? " count(*) numrows " : " a.* ";
+
+        if (is_array($cari) and $cari['value'] != "") {
+            $cari_field = isset($cari['field']) ? $cari['field'] : array("a.nm_jab", "a.kd_jab");
+
+            $isi_where = implode(" like '%" . $cari['value'] . "%' or ", $cari_field);
+
+            $query_where = " and (" . $isi_where . " like '%" . $cari['value'] . "%' ) ";
+        } else {
+            $query_where = "";
+        }
+		
+        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by a.kd_jab asc";
+
+        $query_limit = ($limit) ? " limit " . $offset . ", " . $limit : "";
+
+		$query = "select " . $query_select . " FROM m_jabatan a where a.is_del = 0 " . $query_where . " " . $query_sort . " " . $query_limit;
+       
+        return $this->db->query($query);
+    }
 	 
 	 function get_data_kendaraan($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
         $query_select = ($numrows) ? " count(*) numrows " : " a.* ";
@@ -66,27 +89,25 @@ class Master_model extends CI_Model  {
         return $this->db->query($query);
     }
 
-	function insert_kendaraan($param) {
+	function insert_jabatan($param) {
 		$tanggal = date("Y-m-d");
-		$kodebukti = $this->generate_kode_kendaraan(array('tanggal' => $tanggal, 'kd' => 'K'));
-
+		
 		$data = array(
-				'kd_kendaraan' =>$kodebukti,
-				'nm_kendaraan' => $param['nm_kendaraan'],
-				'jns_kend' => $param['jns_kend'],
-				'bbm' => $param['bbm']
+				'kd_jab' => $param['kd_jab'],
+				'nm_jab' => $param['nm_jab'],
+				'tj_jab' => $this->func_global->rupiah($param['tj_jab'])
 		);
-		return $this->db->insert('m_kendaraan', $data);
+		return $this->db->insert('m_jabatan', $data);
 	}
 
-	function update_kendaraan($param) {
+	function update_jabatan($param) {
 		$data = array(
-				'nm_kendaraan' => $param['nm_kendaraan'],
-				'jns_kend' => $param['jns_kend'],
-				'bbm' => $param['bbm']
+				'kd_jab' => $param['kd_jab'],
+				'nm_jab' => $param['nm_jab'],
+				'tj_jab' => $this->func_global->rupiah($param['tj_jab'])
 		);
-		$this->db->where('id_kendaraan', $param['id_kendaraan']);
-		return $this->db->update('m_kendaraan',$data);
+		$this->db->where('id_jab', $param['id_jab']);
+		return $this->db->update('m_jabatan',$data);
 	}
 
 	function insert_vendor($param) {

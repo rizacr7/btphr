@@ -71,7 +71,7 @@
 
   function loadData() {
 		$.ajax({
-			url: '<?php echo base_url(); ?>index.php/master/tab_kendaraan',
+			url: '<?php echo base_url(); ?>index.php/master/tab_jabatan',
 			success: function (res) {
 				$("#div_tabel_data").html(res);
 			}
@@ -91,7 +91,7 @@
   }
 
   function edit() {
-    var table = $('#table_kendaraan').DataTable();
+    var table = $('#table_jabatan').DataTable();
     var selectedData = table.row({ selected: true }).data();
 
     if (!selectedData) {
@@ -105,22 +105,20 @@
       return;
     }
 
-    var id_kendaraan = selectedData[1];
-    var kd_kendaraan = selectedData[2];
-    var nm_kendaraan = selectedData[3];
-    var jns_kend = selectedData[4];
-    var bbm = selectedData[5];
-
-    $('#id_kendaraan').val(id_kendaraan);
-    $('#kd_kendaraan').val(kd_kendaraan);
-    $('#nm_kendaraan').val(nm_kendaraan);
-    $('#jns_kend').val(jns_kend);
-    $('#bbm').val(bbm);
-
+    var id_jab = selectedData[1];
+    var kd_jab = selectedData[2];
+    var nm_jab = selectedData[3];
+    var tj_jab = selectedData[4];
+   
+    $('#id_jab').val(id_jab);
+    $('#kd_jab').val(kd_jab);
+    $('#nm_jab').val(nm_jab);
+    $('#tj_jab').val(tj_jab);
+   
     $('#myModal').modal('show');
     $('#myModal').on('shown.bs.modal', function () {
       // Bisa tambahkan fokus ke field tertentu kalau mau
-      $('#kd_kendaraan').focus();
+      $('#kd_jab').focus();
     });
   }
 
@@ -128,24 +126,35 @@
     var data = $('#formModal').serialize();
 
     $.ajax({
-      url: '<?php echo base_url(); ?>index.php/master/simpan_kendaraan',
+      url: '<?php echo base_url(); ?>index.php/master/simpan_jabatan',
       type: 'POST',
       data: data,
       success: function(response) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Data berhasil disimpan',
-          showConfirmButton: false,
-          timer: 1500
-        });
-        closemodal();
-        loadData();
+        if(response == "success"){
+          Swal.fire({
+            icon: 'success',
+            title: 'Data berhasil disimpan',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          closemodal();
+          loadData();
+        }
+        else{
+          Swal.fire({
+            icon: 'error',
+            title: 'Terjadi kesalahan',
+            text: 'Gagal menyimpan data.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+          });
+        }
       },
       error: function(xhr, status, error) {
         Swal.fire({
           icon: 'error',
           title: 'Terjadi kesalahan',
-          text: 'Gagal menyimpan data kendaraan.',
+          text: 'Gagal menyimpan data.',
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'OK'
         });
@@ -154,7 +163,7 @@
   }
 
   function hapus() {
-    var table = $('#table_kendaraan').DataTable();
+    var table = $('#table_jabatan').DataTable();
     var selectedData = table.row({ selected: true }).data();
 
     if (!selectedData) {
@@ -168,11 +177,11 @@
       return;
     }
 
-    var id_kendaraan = selectedData[1];
+    var id_jab = selectedData[1];
 
     Swal.fire({
       title: 'Apakah Anda yakin?',
-      text: "Data kendaraan akan dihapus secara permanen!",
+      text: "Data Jabatan akan dihapus secara permanen!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -181,9 +190,9 @@
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
-          url: '<?php echo base_url(); ?>index.php/master/hapus_kendaraan',
+          url: '<?php echo base_url(); ?>index.php/master/hapus_jabatan',
           type: 'POST',
-          data: { id_kendaraan: id_kendaraan },
+          data: { id_jab: id_jab },
           success: function(response) {
             Swal.fire({
               icon: 'success',
@@ -197,7 +206,7 @@
             Swal.fire({
               icon: 'error',
               title: 'Terjadi kesalahan',
-              text: 'Gagal menghapus data kendaraan.',
+              text: 'Gagal menghapus data.',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'OK'
             });
