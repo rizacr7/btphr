@@ -388,7 +388,8 @@ $config['encryption_key'] = 'test_123456789';
 */
 
 $config['sess_driver'] = 'files';
-$config['sess_save_path'] = APPPATH . 'sessions'; 
+// $config['sess_save_path'] = APPPATH . 'sessions'; 
+$config['sess_save_path'] = NULL;
 $config['sess_cookie_name'] = 'ci_hrd';
 // $config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = 7200;
