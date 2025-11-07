@@ -6,9 +6,9 @@
   </div>
   <div class="card">
     <div class="card-header">
-      	<button class="btn btn-primary" onclick="add()">Add</button>
-        <button class="btn btn-warning" onclick="edit()">Edit</button>
-        <button class="btn btn-danger" onclick="hapus()">Delete</button>
+      	<button class="btn btn-primary btn-sm" onclick="add()">Add</button>
+        <button class="btn btn-warning btn-sm" onclick="edit()">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="hapus()">Delete</button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -29,16 +29,8 @@
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="form-group">
-                    <label>Kd.Jabatan</label>
-                    <input type="text" id="kd_jab" name="kd_jab" class="form-control" onkeyup="uppercase(this)" required>
-                  </div>
-                  <div class="form-group">
                     <label>Nm.Jabatan</label><br>
                     <input type="text" id="nm_jab" name="nm_jab" class="form-control" onkeyup="uppercase(this)" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Tj.Jabatan</label><br>
-                    <input type="text" id="tj_jab" name="tj_jab" class="form-control" onkeyup="harga('tj_jab')" required>
                   </div>
                   <div class="form-group" style="display: none">
                     <label>ID</label><br>
@@ -108,12 +100,10 @@
     var id_jab = selectedData[1];
     var kd_jab = selectedData[2];
     var nm_jab = selectedData[3];
-    var tj_jab = selectedData[4];
    
     $('#id_jab').val(id_jab);
     $('#kd_jab').val(kd_jab);
     $('#nm_jab').val(nm_jab);
-    $('#tj_jab').val(tj_jab);
    
     $('#myModal').modal('show');
     $('#myModal').on('shown.bs.modal', function () {

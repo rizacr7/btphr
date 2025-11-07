@@ -254,6 +254,10 @@ class Func_global extends CI_Model{
 	function duit($data){
 		return number_format($data,2,",",".");
 	}
+
+	function formatrp($data){
+		return number_format($data,2,",",".");
+	}
 	
 	function jmkwt($data){
 		return number_format($data,3,",",".");

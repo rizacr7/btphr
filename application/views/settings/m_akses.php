@@ -19,7 +19,7 @@
           <div class="col-md-3 col-sm-3 col-xs-3">
             <div class="form-group">
               <label></label><br>
-              <button type="button" class="btn btn-primary" onclick="viewdt()">View</button>		
+              <button type="button" class="btn btn-primary btn-sm" onclick="viewdt()">View</button>		
             </div>
           </div>
         </div>

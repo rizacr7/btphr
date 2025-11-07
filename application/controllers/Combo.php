@@ -25,6 +25,23 @@ class Combo extends CI_Controller {
         $this->load->model('master_model');
     }
 
+	public function get_jabatan_select2()
+	{
+		$term = $this->input->get('term'); // ambil input dari Select2
+		$this->db->like('nm_jab', $term);
+		$this->db->or_like('kd_jab', $term);
+		$query = $this->db->get('m_jabatan'); // sesuaikan nama tabel
+
+		$data = [];
+		foreach ($query->result() as $row) {
+			$data[] = [
+				'id' => $row->kd_jab, // value yang dikirim ke form
+				'text' => $row->kd_jab . ' - ' . $row->nm_jab // teks yang tampil
+			];
+		}
+		echo json_encode($data);
+	}
+
 	public function get_supplier_select2()
 	{
 		$term = $this->input->get('term'); // ambil input dari Select2

@@ -23,7 +23,7 @@ class Master_model extends CI_Model  {
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
 
-	  function get_data_jabatan($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
+	function get_data_jabatan($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
         $query_select = ($numrows) ? " count(*) numrows " : " a.* ";
 
         if (is_array($cari) and $cari['value'] != "") {
@@ -44,12 +44,12 @@ class Master_model extends CI_Model  {
        
         return $this->db->query($query);
     }
-	 
-	 function get_data_kendaraan($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
+	
+	function get_data_statuspeg($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
         $query_select = ($numrows) ? " count(*) numrows " : " a.* ";
 
         if (is_array($cari) and $cari['value'] != "") {
-            $cari_field = isset($cari['field']) ? $cari['field'] : array("a.nm_kendaraan", "a.kd_kendaraan");
+            $cari_field = isset($cari['field']) ? $cari['field'] : array("a.nm_statuspeg", "a.kd_statuspeg");
 
             $isi_where = implode(" like '%" . $cari['value'] . "%' or ", $cari_field);
 
@@ -58,20 +58,20 @@ class Master_model extends CI_Model  {
             $query_where = "";
         }
 		
-        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by a.id_kendaraan desc";
+        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by a.kd_statuspeg asc";
 
         $query_limit = ($limit) ? " limit " . $offset . ", " . $limit : "";
 
-		$query = "select " . $query_select . " FROM m_kendaraan a where a.id_kendaraan is not null " . $query_where . " " . $query_sort . " " . $query_limit;
+		$query = "select " . $query_select . " FROM m_statuspeg a where a.is_del = 0 " . $query_where . " " . $query_sort . " " . $query_limit;
        
         return $this->db->query($query);
     }
 
-	 function get_data_vendor($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
-        $query_select = ($numrows) ? " count(*) numrows " : " a.* ";
+	function get_data_leveljabatan($cari = "", $sort = "", $order = "", $offset = "0", $limit = "", $numrows = 0) {
+        $query_select = ($numrows) ? " count(*) numrows " : " a.*,b.nm_jab ";
 
         if (is_array($cari) and $cari['value'] != "") {
-            $cari_field = isset($cari['field']) ? $cari['field'] : array("a.nm_vendor", "a.kd_vendor");
+            $cari_field = isset($cari['field']) ? $cari['field'] : array("b.nm_jab", "a.kd_jab", "a.kd_leveljab");
 
             $isi_where = implode(" like '%" . $cari['value'] . "%' or ", $cari_field);
 
@@ -80,114 +80,123 @@ class Master_model extends CI_Model  {
             $query_where = "";
         }
 		
-        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by a.id_vendor desc";
+        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by a.kd_jab asc";
 
         $query_limit = ($limit) ? " limit " . $offset . ", " . $limit : "";
 
-		$query = "select " . $query_select . " FROM m_vendor a where a.id_vendor is not null " . $query_where . " " . $query_sort . " " . $query_limit;
+		$query = "select " . $query_select . " FROM m_level_jabatan a left join m_jabatan b ON a.kd_jab = b.kd_jab where a.is_del = 0 " . $query_where . " " . $query_sort . " " . $query_limit;
        
         return $this->db->query($query);
     }
+	
 
 	function insert_jabatan($param) {
 		$tanggal = date("Y-m-d");
+
+		$tanggal = date("Y-m-d");
+		$kodebukti = $this->get_bukti_jab(array('tanggal' => $tanggal, 'kd' => 'J'));
 		
 		$data = array(
-				'kd_jab' => $param['kd_jab'],
-				'nm_jab' => $param['nm_jab'],
-				'tj_jab' => $this->func_global->rupiah($param['tj_jab'])
+				'kd_jab' => $kodebukti,
+				'nm_jab' => $param['nm_jab']
 		);
 		return $this->db->insert('m_jabatan', $data);
 	}
 
 	function update_jabatan($param) {
 		$data = array(
-				'kd_jab' => $param['kd_jab'],
-				'nm_jab' => $param['nm_jab'],
-				'tj_jab' => $this->func_global->rupiah($param['tj_jab'])
+			'nm_jab' => $param['nm_jab']
 		);
 		$this->db->where('id_jab', $param['id_jab']);
 		return $this->db->update('m_jabatan',$data);
 	}
 
-	function insert_vendor($param) {
-		$bank = $param['bank'];
-		$atas_nama = $param['atas_nama'];
-		$no_rek = $param['no_rek'];
-		$npwp = $param['npwp'];
+	function get_bukti_jab($param) {
+		$tanggal = $param['tanggal'];
+		$kd = $param['kd'];
+
+		$thn = substr($tanggal, 2, 2);
+		$bln = substr($tanggal, 5, 2);
+
+		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_jab,2,2)),0) AS max_kode FROM m_jabatan WHERE kd_jab LIKE '$kd%'");
+		$row = $query->row();
+		$max_kode = $row->max_kode;
+		$kode_baru = str_pad((int)$max_kode + 1, 2, "0", STR_PAD_LEFT);
+		$kodebukti = $kd . $kode_baru;
+		return $kodebukti;
+	}
+
+
+	function insert_statuspeg($param) {
+		$tanggal = date("Y-m-d");
 
 		$tanggal = date("Y-m-d");
-		$kodebukti = $this->get_bukti_vendor(array('tanggal' => $tanggal, 'kd' => 'S'));
-
+		$kodebukti = $this->get_bukti_statuspeg(array('tanggal' => $tanggal, 'kd' => 'S'));
+		
 		$data = array(
-				'kd_vendor' => $kodebukti,
-				'nm_vendor' => $param['nm_vendor'],
-				'alamat' => $param['alamat'],
-				'telp' => $param['telp'],
-				'bank' => $bank,
-				'atas_nama' => $atas_nama,
-				'no_rek' => $no_rek,
-				'npwp' => $npwp
+			'kd_statuspeg' => $kodebukti,
+			'nm_statuspeg' => $param['nm_statuspeg']
 		);
-		return $this->db->insert('m_vendor', $data);
+		return $this->db->insert('m_statuspeg', $data);
 	}
 
-	function update_vendor($param) {
-		$bank = $param['bank'];
-		$atas_nama = $param['atas_nama'];
-		$no_rek = $param['no_rek'];
-		$npwp = $param['npwp'];
-
+	function update_statuspeg($param) {
 		$data = array(
-				'nm_vendor' => $param['nm_vendor'],
-				'alamat' => $param['alamat'],
-				'telp' => $param['telp'],
-				'bank' => $bank,
-				'atas_nama' => $atas_nama,
-				'no_rek' => $no_rek,
-				'npwp' => $npwp
+			'nm_statuspeg' => $param['nm_statuspeg']
 		);
-		$this->db->where('id_vendor', $param['id_vendor']);
-		return $this->db->update('m_vendor',$data);
+		$this->db->where('id_statuspeg', $param['id_statuspeg']);
+		return $this->db->update('m_statuspeg',$data);
 	}
 
-	function get_bukti_vendor($param) {
+	function get_bukti_statuspeg($param) {
 		$tanggal = $param['tanggal'];
 		$kd = $param['kd'];
 
 		$thn = substr($tanggal, 2, 2);
 		$bln = substr($tanggal, 5, 2);
 
-		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_vendor,6,4)),0) AS max_kode FROM m_vendor WHERE kd_vendor LIKE '$kd%'");
+		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_statuspeg,2,2)),0) AS max_kode FROM m_statuspeg WHERE kd_statuspeg LIKE '$kd%'");
 		$row = $query->row();
 		$max_kode = $row->max_kode;
-		$kode_baru = str_pad((int)$max_kode + 1, 4, "0", STR_PAD_LEFT);
-		$kodebukti = $kd . $thn . $bln . $kode_baru;
+		$kode_baru = str_pad((int)$max_kode + 1, 2, "0", STR_PAD_LEFT);
+		$kodebukti = $kd . $kode_baru;
 		return $kodebukti;
 	}
 
-	function generate_kode_kendaraan($param) {
-		$tanggal = $param['tanggal'];
-		$kd = $param['kd'];
-
-		$thn = substr($tanggal, 2, 2);
-		$bln = substr($tanggal, 5, 2);
-
-		$query = $this->db->query("SELECT IFNULL(MAX(SUBSTRING(kd_kendaraan,4,4)),0) AS max_kode FROM m_kendaraan WHERE kd_kendaraan LIKE '$kd%'");
-		$row = $query->row();
-		$max_kode = $row->max_kode;
-		$kode_baru = str_pad((int)$max_kode + 1, 4, "0", STR_PAD_LEFT);
-		$kodebukti = $kd . $thn . $kode_baru;
-		return $kodebukti;
+	function insert_leveljab($param){
+		$data = array(
+			'kd_leveljab' => $param['kd_leveljab'],
+			'kd_jab' => $param['kd_jab'],
+			'level' => $param['level'],
+			'gapok' => $param['gapok'],
+			'tj_jabatan' => $param['tj_jabatan'],
+			'tj_kinerja' => $param['tj_kinerja'],
+			'tj_transport' => $param['tj_transport'],
+			'tj_komunikasi' => $param['tj_komunikasi'],
+			'tj_konsumsi' => $param['tj_konsumsi'],
+			'tj_kinerja' => $param['tj_kinerja'],
+			'tj_lembur' => $param['tj_lembur'],
+			'tj_hr' => $param['tj_hr'],
+			'tj_kehadiran' => $param['tj_kehadiran']
+		);
+		return $this->db->insert('m_level_jabatan', $data);
 	}
 
-	function get_supplier_select2($searchTerm) {
-		$this->db->select('kd_vendor as id, nm_vendor as text');
-		$this->db->from('m_vendor');
-		$this->db->like('nm_vendor', $searchTerm);
-		$this->db->or_like('kd_vendor', $searchTerm);
-		$this->db->limit(10);
-		$query = $this->db->get();
-		return $query->result();
+	function update_leveljab($param){
+		$data = array(
+			'gapok' => $param['gapok'],
+			'tj_jabatan' => $param['tj_jabatan'],
+			'tj_kinerja' => $param['tj_kinerja'],
+			'tj_transport' => $param['tj_transport'],
+			'tj_komunikasi' => $param['tj_komunikasi'],
+			'tj_konsumsi' => $param['tj_konsumsi'],
+			'tj_kinerja' => $param['tj_kinerja'],
+			'tj_lembur' => $param['tj_lembur'],
+			'tj_hr' => $param['tj_hr'],
+			'tj_kehadiran' => $param['tj_kehadiran']
+		);
+		$this->db->where('id_leveljab', $param['id_leveljab']);
+		return $this->db->update('m_level_jabatan', $data);
 	}
+
 }

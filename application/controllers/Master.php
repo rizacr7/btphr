@@ -37,10 +37,17 @@ class Master extends CI_Controller {
         $this->load->view('general/footer');
     }
 
-	function mastervendor(){
+	function masterstatuspegawai(){
         $this->load->view('general/header');
         $this->load->view('general/sidebar');
-        $this->load->view('master/mst_vendor');
+        $this->load->view('master/mst_statuspegawai');
+        $this->load->view('general/footer');
+    }
+
+	function masterleveljab(){
+        $this->load->view('general/header');
+        $this->load->view('general/sidebar');
+        $this->load->view('master/mst_leveljab');
         $this->load->view('general/footer');
     }
 
@@ -53,7 +60,6 @@ class Master extends CI_Controller {
 				<th style='display:none'>Id</th>
 				<th>Kode Jabatan</th>
 				<th>Nama Jabatan</th>
-				<th>Tj.Jabatan</th>
 			</tr>
 		</thead>
 		<tbody>";
@@ -66,7 +72,6 @@ class Master extends CI_Controller {
 				<td style='display:none'>" . $value['id_jab'] . "</td>
 				<td>" . $value['kd_jab'] . "</td>
 				<td>" . $value['nm_jab'] . "</td>
-				<td style='text-align:right'>" . $this->func_global->duit($value['tj_jab']) . "</td>
 			</tr>";
             $no++;
         }
@@ -86,38 +91,26 @@ class Master extends CI_Controller {
 		</script>";
     }
 
-	function tab_vendor(){
-        echo "<table id='table_vendor' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
+	function tab_statuspegawai(){
+        echo "<table id='table_statuspeg' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>
 			<tr class='info'>
 				<th>No.</th>
 				<th style='display:none'>Id</th>
-				<th>Kode Vendor</th>
-				<th>Nama Vendor</th>
-				<th>Alamat</th>
-				<th>Telp</th>
-				<th>NPWP</th>
-				<th>Bank</th>
-				<th>No.Rekening</th>
-				<th>Atas Nama</th>
+				<th>Kode Status</th>
+				<th>Nama Status Pegawai</th>
 			</tr>
 		</thead>
 		<tbody>";
         $no = 1;
-        $data = $this->master_model->get_data_vendor("", "", "", 0, 0);
+        $data = $this->master_model->get_data_statuspeg("", "", "", 0, 0);
         foreach ($data->result_array() as $key => $value) {
 			
             echo "<tr>
 				<td>" . $no . "</td>
-				<td style='display:none'>" . $value['id_vendor'] . "</td>
-				<td>" . $value['kd_vendor'] . "</td>
-				<td>" . $value['nm_vendor'] . "</td>
-				<td>" . $value['alamat'] . "</td>
-				<td>" . $value['telp'] . "</td>
-				<td>" . $value['npwp'] . "</td>
-				<td>" . $value['bank'] . "</td>
-				<td>" . $value['no_rek'] . "</td>
-				<td>" . $value['atas_nama'] . "</td>
+				<td style='display:none'>" . $value['id_statuspeg'] . "</td>
+				<td>" . $value['kd_statuspeg'] . "</td>
+				<td>" . $value['nm_statuspeg'] . "</td>
 			</tr>";
             $no++;
         }
@@ -130,99 +123,226 @@ class Master extends CI_Controller {
 			}
 		</style>
 		<script>
-			$('#table_vendor').dataTable({
+			$('#table_statuspeg').dataTable({
 				responsive:'true',
 				select: {style: 'single'}
 			});
 		</script>";
     }
 
+	function tab_leveljab(){
+        echo "<table id='table_leveljab' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
+		<thead>
+			<tr class='info'>
+				<th>No.</th>
+				<th style='display:none'>Id</th>
+				<th>Kode Level Jabatan</th>
+				<th>Jabatan</th>
+				<th>Level</th>
+				<th>Gapok</th>
+				<th>Tj.Jabatan</th>
+				<th>Tj.Komunikasi</th>
+				<th>Tj.Transport</th>
+				<th>Tj.Konsumsi</th>
+				<th>Tj.Kinerja</th>
+				<th>Tj.Lembur</th>
+				<th>Tj.HR</th>
+				<th>Tj.Kehadiran</th>
+			</tr>
+		</thead>
+		<tbody>";
+        $no = 1;
+        $data = $this->master_model->get_data_leveljabatan("", "", "", 0, 0);
+        foreach ($data->result_array() as $key => $value) {
+			
+            echo "<tr>
+				<td>" . $no . "</td>
+				<td style='display:none'>" . $value['id_leveljab'] . "</td>
+				<td>" . $value['kd_leveljab'] . "</td>
+				<td>" . $value['nm_jab'] . "</td>
+				<td>" . $value['level'] . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['gapok']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_jabatan']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_komunikasi']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_transport']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_konsumsi']) . "</td>
+
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_kinerja']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_lembur']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_hr']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_kehadiran']) . "</td>
+			</tr>";
+            $no++;
+        }
+
+        echo "</tbody>
+		</table>
+		<style>
+			.selected td {
+				background-color: #c6ccdcff; !important;
+			}
+		</style>
+		<script>
+			$('#table_leveljab').dataTable({
+				responsive:'true',
+				select: {style: 'single'}
+			});
+		</script>";
+    }
+
+
 	function simpan_jabatan() {
 		$id_jab = $this->input->post('id_jab');
-		$kd_jab = $this->input->post('kd_jab');
 		$nm_jab = $this->input->post('nm_jab');
-		$tj_jab = $this->input->post('tj_jab');
-		
+
 		$param = array(
-			'kd_jab' => $kd_jab,
 			'nm_jab' => $nm_jab,
-			'tj_jab' => $tj_jab,
 			'id_jab' => $id_jab
 		);
 
 		if ($id_jab == "") {
 			//--cek kd jab ---
-			$queryCek = "SELECT * FROM m_jabatan WHERE kd_jab = '$kd_jab'";
-			$rdt = $this->db->query($queryCek)->num_rows();
-			if($rdt == 0){
-				// insert
-				$this->master_model->insert_jabatan($param);
-				echo "success";
-			}
-			else{
-				echo "erorr";
-			}
+			$this->master_model->insert_jabatan($param);
+			echo "success";
+			
 		} else {
 			// update
 			$this->master_model->update_jabatan($param);
-			echo "Data Jabatan berhasil diupdate.";
+			echo "success";
 		}
 	}
 
-	function hapus_kendaraan() {
-		$id_kendaraan = $this->input->post('id_kendaraan');
+	function hapus_jabatan() {
+		$id_jab = $this->input->post('id_jab');
 
-		$this->db->where('id_kendaraan', $id_kendaraan);
-		$this->db->delete('m_kendaraan');
+		$this->db->where('id_jab', $id_jab);
+		$this->db->delete('m_jabatan');
 
-		echo "Data Kendaraan berhasil dihapus.";
+		echo "Data berhasil dihapus.";
 	}
 
-	function simpan_vendor() {
-		$id_vendor = $this->input->post('id_vendor');
-		$nm_vendor = $this->input->post('nm_vendor');
-		$alamat = $this->input->post('alamat');
-		$telp = $this->input->post('telp');
 
-		$bank = $this->input->post('bank');
-		$atas_nama = $this->input->post('atas_nama');
-		$no_rek = $this->input->post('no_rek');
-		$npwp = $this->input->post('npwp');
+	function simpan_statuspeg() {
+		$id_statuspeg = $this->input->post('id_statuspeg');
+		$nm_statuspeg = $this->input->post('nm_statuspeg');
 
 		$param = array(
-			'nm_vendor' => $nm_vendor,
-			'alamat' => $alamat,
-			'telp' => $telp,
-			'bank' => $bank,
-			'atas_nama' => $atas_nama,
-			'no_rek' => $no_rek,
-			'id_vendor' => $id_vendor,
-			'npwp' => $npwp
+			'nm_statuspeg' => $nm_statuspeg,
+			'id_statuspeg' => $id_statuspeg
 		);
 
-		if ($id_vendor == "") {
-			// insert
-			$this->master_model->insert_vendor($param);
-			echo "Data Vendor berhasil ditambahkan.";
+		if ($id_statuspeg == "") {
+			//--cek kd jab ---
+			$this->master_model->insert_statuspeg($param);
+			echo "success";
+			
 		} else {
 			// update
-			$this->master_model->update_vendor($param);
-			echo "Data Vendor berhasil diupdate.";
+			$this->master_model->update_statuspeg($param);
+			echo "success";
 		}
 	}
 
-	function ajaxdtvendor() {
-		$id_vendor = $this->input->get('id_vendor');
-		$data = $this->master_model->get_data_vendor("id_vendor = '$id_vendor'", "", "", 0, 0)->row();
+	function hapus_statuspeg() {
+		$id_statuspeg = $this->input->post('id_statuspeg');
+
+		$this->db->where('id_statuspeg', $id_statuspeg);
+		$this->db->delete('m_statuspeg');
+
+		echo "Data berhasil dihapus.";
+	}
+	
+	function simpan_leveljab(){
+		$id_leveljab = $this->input->post('id_leveljab');
+		$kd_jab = $this->input->post('kd_jab');
+		$level = $this->input->post('level');
+		$gapok = $this->input->post('gapok');
+
+		$tj_jabatan = $this->input->post('tj_jabatan');
+		$tj_transport = $this->input->post('tj_transport');
+		$tj_komunikasi = $this->input->post('tj_komunikasi');
+		$tj_konsumsi = $this->input->post('tj_konsumsi');
+
+		$tj_kinerja = $this->input->post('tj_kinerja');
+		$tj_lembur = $this->input->post('tj_lembur');
+		$tj_hr = $this->input->post('tj_hr');
+		$tj_kehadiran = $this->input->post('tj_kehadiran');
+
+		if($id_leveljab == ""){
+			$kd_leveljab = $kd_jab.".".$level;
+			//--- insert data ---
+			$cekData = "SELECT * FROM m_level_jabatan WHERE kd_leveljab = '$kd_leveljab' AND is_del = 0";
+			$row = $this->db->query($cekData)->num_rows();
+			if($row > 0){
+				echo "400";
+			}
+			else{
+				$param = array(
+					'kd_leveljab' => $kd_leveljab,
+					'kd_jab' => $kd_jab,
+					'level' => $level,
+					'gapok' => $this->func_global->rupiah($gapok),
+					'tj_jabatan' => $this->func_global->rupiah($tj_jabatan),
+					'tj_transport' => $this->func_global->rupiah($tj_transport),
+					'tj_komunikasi' => $this->func_global->rupiah($tj_komunikasi),
+					'tj_konsumsi' => $this->func_global->rupiah($tj_konsumsi),
+					'tj_kinerja' => $this->func_global->rupiah($tj_kinerja),
+					'tj_lembur' => $this->func_global->rupiah($tj_lembur),
+					'tj_hr' => $this->func_global->rupiah($tj_hr),
+					'tj_kehadiran' => $this->func_global->rupiah($tj_kehadiran),
+				);
+				$this->master_model->insert_leveljab($param);
+				echo "success";
+			}
+		}
+		else{
+			//---update data --
+			$param = array(
+				'id_leveljab' => $id_leveljab,
+				'gapok' => $this->func_global->rupiah($gapok),
+				'tj_jabatan' => $this->func_global->rupiah($tj_jabatan),
+				'tj_transport' => $this->func_global->rupiah($tj_transport),
+				'tj_komunikasi' => $this->func_global->rupiah($tj_komunikasi),
+				'tj_konsumsi' => $this->func_global->rupiah($tj_konsumsi),
+				'tj_kinerja' => $this->func_global->rupiah($tj_kinerja),
+				'tj_lembur' => $this->func_global->rupiah($tj_lembur),
+				'tj_hr' => $this->func_global->rupiah($tj_hr),
+				'tj_kehadiran' => $this->func_global->rupiah($tj_kehadiran),
+			);
+			$this->master_model->update_leveljab($param);
+			echo "success";
+		}
+
+	}
+
+	function ajaxdtleveljab() {
+		$id_leveljab = $this->input->get('id_leveljab');
+		$query = "SELECT a.*,b.nm_jab,
+		REPLACE(FORMAT(a.gapok, 0), ',', '.')AS gaji,
+		REPLACE(FORMAT(a.tj_jabatan, 0), ',', '.')AS tjjabatan,
+		REPLACE(FORMAT(a.tj_komunikasi, 0), ',', '.')AS tjkomunikasi,
+		REPLACE(FORMAT(a.tj_transport, 0), ',', '.')AS tjtransport,
+		REPLACE(FORMAT(a.tj_konsumsi, 0), ',', '.')AS tjkonsumsi,
+		REPLACE(FORMAT(a.`tj_kinerja`, 0), ',', '.')AS tjkinerja,
+		REPLACE(FORMAT(a.tj_kehadiran, 0), ',', '.')AS tjkehadiran,
+		REPLACE(FORMAT(a.tj_lembur, 0), ',', '.')AS tjlembur,
+		REPLACE(FORMAT(a.tj_hr, 0), ',', '.')AS tjhr
+		FROM m_level_jabatan a LEFT JOIN m_jabatan b ON a.kd_jab = b.kd_jab WHERE id_leveljab = '".$id_leveljab."'";
+		$data = $this->db->query($query)->row();
 		echo json_encode($data);
 	}
 
-	function hapus_vendor() {
-		$id_vendor = $this->input->post('id_vendor');
+	function hapus_leveljabatan(){
+		$id_leveljab = $_POST['id_leveljab'];
+		$today = date("Y-m-d");
 
-		$this->db->where('id_vendor', $id_vendor);
-		$this->db->delete('m_vendor');
-
-		echo "Data Kendaraan berhasil dihapus.";
+		$data = array(
+			'is_del' => 1,
+			'tgl_hapus' => $today
+		);
+		$this->db->where('id_leveljab', $id_leveljab);
+		$this->db->update('m_level_jabatan', $data);
+		echo "success";
 	}
+
 }
