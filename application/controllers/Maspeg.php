@@ -137,4 +137,34 @@ class Maspeg extends CI_Controller {
 		];
 		echo json_encode($output);
 	}
+
+	public function delete($no_peg)
+	{
+		// Pastikan hanya bisa diakses lewat AJAX
+		if ($this->input->is_ajax_request()) {
+
+			$this->db->where('no_peg', $no_peg);
+			$update = $this->db->update('mas_peg', [
+				'is_del' => 1,
+				'flag_keluar' => 1,
+				'tgl_hapus' => date('Y-m-d H:i:s')
+			]);
+
+			if ($update) {
+				$response = [
+					'status' => true,
+					'message' => 'Data pegawai berhasil dihapus.'
+				];
+			} else {
+				$response = [
+					'status' => false,
+					'message' => 'Gagal menghapus data pegawai.'
+				];
+			}
+
+			echo json_encode($response);
+		} else {
+			show_error('Akses tidak diizinkan', 403);
+		}
+	}
 }

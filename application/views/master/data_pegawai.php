@@ -60,6 +60,52 @@ function loadData() {
   });
 }
 
+function hapusPegawai(no_peg) {
+  Swal.fire({
+    title: 'Apakah Anda yakin?',
+    text: "Data pegawai akan ditandai keluar.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: '<?php echo base_url(); ?>index.php/maspeg/delete/'+ no_peg,
+        type: "POST",
+        dataType: "JSON",
+        success: function (res) {
+          if (res.status) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil',
+              text: res.message,
+              timer: 1500,
+              showConfirmButton: false
+            });
+            $('#tblPegawai').DataTable().ajax.reload();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Gagal',
+              text: res.message
+            });
+          }
+        },
+        error: function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Terjadi Kesalahan',
+            text: 'Tidak dapat menghapus data.'
+          });
+        }
+      });
+    }
+  });
+}
+
   
 </script>
 
