@@ -58,6 +58,13 @@ class Master extends CI_Controller {
         $this->load->view('general/footer');
     }
 
+	function datapegawai(){
+        $this->load->view('general/header');
+        $this->load->view('general/sidebar');
+        $this->load->view('master/data_pegawai');
+        $this->load->view('general/footer');
+    }
+
     function tab_jabatan(){
         echo "<table id='table_jabatan' class='table table-bordered dt-responsive table-head-bg-primary table-bordered-bd-primary mt-2' width='100%'>
 		<thead>

@@ -2,6 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Master_model extends CI_Model  {
+
+	var $table = 'mas_peg';
+	var $column_order = ['no_peg','na_peg','status_peg','kd_unit','kd_jab','no_hp','tgl_masuk'];
+	var $column_search = ['no_peg','na_peg','status_peg','kd_unit','kd_jab','no_hp'];
+	var $order = ['tgl_update' => 'DESC'];
 	
 	public function __construct() {
         $this->load->database();
@@ -218,6 +223,64 @@ class Master_model extends CI_Model  {
 		$newId = sprintf("%03s", $noUrut);
 		$id= $kode.$newId;
 		return $id;
+	}
+
+
+	private function _get_datatables_query() {
+		$this->db->select('
+		a.*,
+		b.nm_statuspeg,
+		c.level,
+		d.nm_jab
+		');
+		$this->db->from('mas_peg a');
+		$this->db->join('m_statuspeg b', 'a.status_peg = b.kd_statuspeg', 'left');
+		$this->db->join('m_level_jabatan c', 'a.kd_leveljab = c.kd_leveljab', 'left');
+		$this->db->join('m_jabatan d', 'c.kd_jab = d.kd_jab', 'left');
+		$this->db->where('a.flag_keluar', 0);
+		// 🔍 pencarian global
+		$i = 0;
+		foreach ($this->column_search as $item) {
+		if ($_POST['search']['value']) {
+			if ($i === 0) {
+			$this->db->group_start();
+			$this->db->like($item, $_POST['search']['value']);
+			} else {
+			$this->db->or_like($item, $_POST['search']['value']);
+			}
+			if (count($this->column_search) - 1 == $i)
+			$this->db->group_end();
+		}
+		$i++;
+		}
+
+		// 🔄 sorting
+		if (isset($_POST['order'])) {
+		$this->db->order_by(
+			$this->column_order[$_POST['order'][0]['column']],
+			$_POST['order'][0]['dir']
+		);
+		} else if (isset($this->order)) {
+		$order = $this->order;
+		$this->db->order_by(key($order), $order[key($order)]);
+		}
+	}
+
+	function get_datatables() {
+		$this->_get_datatables_query();
+		if ($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		return $this->db->get()->result();
+	}
+
+	function count_filtered() {
+		$this->_get_datatables_query();
+		return $this->db->get()->num_rows();
+	}
+
+	function count_all() {
+		$this->db->from($this->table);
+		return $this->db->count_all_results();
 	}
 
 }

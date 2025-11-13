@@ -22,7 +22,7 @@ class Maspeg extends CI_Controller {
         parent::__construct();
         $this->load->library('session');
         $this->load->helper('url');
-        $this->load->model('master_model');
+        $this->load->model('master_model','pegawai');
 		$this->load->model('func_global');
     }
 
@@ -77,6 +77,7 @@ class Maspeg extends CI_Controller {
 			'nm_ibu'         => $this->input->post('nm_ibu'),
 			'agama'          => $this->input->post('agama'),
 			'kawin'          => $this->input->post('kawin'),
+			'kd_leveljab'    => $this->input->post('kd_leveljab'),
 			'tgl_kontrak'    => $this->func_global->tgl_dsql($this->input->post('tgl_kontrak')),
 			'tgl_akhir'      => $this->func_global->tgl_dsql($this->input->post('tgl_akhir_kontrak')),
 			'status_pajak'   => $this->input->post('status_pajak'),
@@ -96,5 +97,44 @@ class Maspeg extends CI_Controller {
 		$this->db->insert('mas_peg', $data);
 		echo json_encode(['status' => true, 'message' => 'Data berhasil disimpan.']);
 	
+	}
+
+	public function get_data_pegawai() {
+		$list = $this->pegawai->get_datatables();
+		$data = [];
+		$no = $_POST['start'];
+
+		foreach ($list as $row) {
+		$no++;
+		$aksi = '
+			<button class="btn btn-sm btn-warning" onclick="editPegawai(\''.$row->no_peg.'\')">Edit</button>
+			<button class="btn btn-sm btn-danger" onclick="hapusPegawai(\''.$row->no_peg.'\')">Hapus</button>
+		';
+
+		$data[] = [
+			$no,
+			$row->no_peg,
+			$row->na_peg,
+			$row->nm_statuspeg,
+			$row->nm_jab,
+			$row->level,
+			$row->tgl_masuk,
+			$row->alamat,
+			$row->no_ktp,
+			$row->sex,
+			$row->tmpt_lahir,
+			$row->tgl_lahir,
+			$row->no_hp,
+			$aksi
+		];
+		}
+
+		$output = [
+		"draw" => $_POST['draw'],
+		"recordsTotal" => $this->pegawai->count_all(),
+		"recordsFiltered" => $this->pegawai->count_filtered(),
+		"data" => $data,
+		];
+		echo json_encode($output);
 	}
 }
