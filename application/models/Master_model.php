@@ -199,4 +199,25 @@ class Master_model extends CI_Model  {
 		return $this->db->update('m_level_jabatan', $data);
 	}
 
+	function get_nopegawai($data){
+		$status_peg = $data['status_peg'];
+		$tanggal = $data['tanggal'];
+		$str = explode("-", $tanggal);
+		$thn = $str[0];
+		$bln = $str[1];
+		$day = $str[2];
+		$tahun = substr($thn,2,2);
+		
+		$code = $bln;
+		$kode = $code.$tahun;
+		$sql = "SELECT MAX(no_peg) AS maxID FROM mas_peg WHERE no_peg like '$kode%'";
+		
+		$result = $this->db->query($sql)->result();
+		$noUrut = (int) substr($result[0]->maxID, -3);
+		$noUrut++;
+		$newId = sprintf("%03s", $noUrut);
+		$id= $kode.$newId;
+		return $id;
+	}
+
 }

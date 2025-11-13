@@ -42,36 +42,59 @@ class Combo extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	public function get_supplier_select2()
+	public function get_statuspeg_select2()
 	{
 		$term = $this->input->get('term'); // ambil input dari Select2
-		$this->db->like('nm_vendor', $term);
-		$this->db->or_like('kd_vendor', $term);
-		$query = $this->db->get('m_vendor'); // sesuaikan nama tabel
+		$this->db->like('nm_statuspeg', $term);
+		$this->db->or_like('kd_statuspeg', $term);
+		$query = $this->db->get('m_statuspeg'); // sesuaikan nama tabel
 
 		$data = [];
 		foreach ($query->result() as $row) {
 			$data[] = [
-				'id' => $row->kd_vendor, // value yang dikirim ke form
-				'text' => $row->kd_vendor . ' - ' . $row->nm_vendor // teks yang tampil
+				'id' => $row->kd_statuspeg, // value yang dikirim ke form
+				'text' => $row->kd_statuspeg . ' - ' . $row->nm_statuspeg // teks yang tampil
 			];
 		}
 
 		echo json_encode($data);
 	}
 
-	function get_kendaraan_select2()
+	public function get_ptkp_select2()
 	{
 		$term = $this->input->get('term'); // ambil input dari Select2
-		$this->db->like('nm_kendaraan', $term);
-		$this->db->or_like('kd_kendaraan', $term);
-		$query = $this->db->get('m_kendaraan'); // sesuaikan nama tabel
+		$this->db->like('kode', $term);
+		$this->db->or_like('keterangan', $term);
+		$query = $this->db->get('m_ptkp'); // sesuaikan nama tabel
 
 		$data = [];
 		foreach ($query->result() as $row) {
 			$data[] = [
-				'id' => $row->kd_kendaraan, // value yang dikirim ke form
-				'text' => $row->kd_kendaraan . ' - ' . $row->nm_kendaraan // teks yang tampil
+				'id' => $row->kode, // value yang dikirim ke form
+				'text' => $row->kode . ' - ' . $row->keterangan // teks yang tampil
+			];
+		}
+
+		echo json_encode($data);
+	}
+
+	function get_leveljab_select2()
+	{
+		$term = $this->input->get('term'); // ambil input dari Select2
+		$this->db->select('a.*, b.nm_jab');
+		$this->db->from('m_level_jabatan a');
+		$this->db->join('m_jabatan b', 'a.kd_jab = b.kd_jab', 'left');
+		$this->db->group_start();
+		$this->db->like('b.nm_jab', $term);
+		$this->db->or_like('a.kd_leveljab', $term);
+		$this->db->group_end();
+		$query = $this->db->get();// sesuaikan nama tabel
+
+		$data = [];
+		foreach ($query->result() as $row) {
+			$data[] = [
+				'id' => $row->kd_leveljab, // value yang dikirim ke form
+				'text' => $row->nm_jab . ' - Level ' . $row->level // teks yang tampil
 			];
 		}
 
