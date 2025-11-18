@@ -88,6 +88,7 @@ class Combo extends CI_Controller {
 		$this->db->like('b.nm_jab', $term);
 		$this->db->or_like('a.kd_leveljab', $term);
 		$this->db->group_end();
+		$this->db->where('a.is_del','0');
 		$query = $this->db->get();// sesuaikan nama tabel
 
 		$data = [];

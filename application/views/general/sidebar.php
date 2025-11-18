@@ -99,7 +99,7 @@
       <div class="main-header">
           <div class="main-header-logo">
             <!-- Logo Header -->
-            <div class="logo-header" data-background-color="blue">
+            <div class="logo-header" data-background-color="dark">
               <a href="#" class="logo">
                 <img
                   src="<?php echo base_url(); ?>assets/img/btp_logo.png"
