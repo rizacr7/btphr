@@ -52,7 +52,8 @@ class Welcome extends CI_Controller {
                 'logged_in' => true,
                 'username' => $user->username,
                 'nama' => $user->nama,
-                'role' => $user->role
+                'role' => $user->role,
+                'kdprsh' => $user->kd_prsh
             ]);
             echo json_encode(['status' => 'success', 'redirect' =>base_url('index.php/Welcome/home')]);
         } else {

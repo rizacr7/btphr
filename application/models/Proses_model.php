@@ -116,12 +116,120 @@ class Proses_model extends CI_Model  {
 				'gaji_bruto' => $gajibruto,
 				'gaji_netto' => $gajinetto,
 				'pot_bpjs_tk' => $pot_jamsostek_peg,
-				'pot_bpjs_jkk' => $pot_pensiun_peg,
+				'pot_bpjs_jp' => $pot_pensiun_peg,
 				'pot_bpjs' => $pot_bpjs_peg,
 				'user_id' => $username
 			);
 			$this->db->insert('t_gaji', $data);
 
 		}
-	 }
+	}
+
+	function get_data_gaji($cari = "", $sort = "", $order = "", $offset = "0", $limit = "",$data, $numrows = 0) {
+		$bulan = $data['bulan'];
+		$tahun = $data['tahun'];
+
+        $query_select = ($numrows) ? " count(*) numrows " : " a.*,b.nm_jab,c.na_peg ";
+
+        if (is_array($cari) and $cari['value'] != "") {
+            $cari_field = isset($cari['field']) ? $cari['field'] : array("a.no_peg", "c.na_peg","b.nm_jab");
+
+            $isi_where = implode(" like '%" . $cari['value'] . "%' or ", $cari_field);
+
+            $query_where = " and (" . $isi_where . " like '%" . $cari['value'] . "%' ) ";
+        } else {
+            $query_where = "";
+        }
+		
+        $query_sort = ($sort) ? " order by " . $sort . " " . $order : "order by a.id asc";
+
+        $query_limit = ($limit) ? " limit " . $offset . ", " . $limit : "";
+
+		$query = "select " . $query_select . " FROM t_gaji a 
+		LEFT JOIN m_jabatan b ON a.`kd_jab` = b.`kd_jab` 
+		LEFT JOIN mas_peg c ON a.no_peg = c.no_peg
+		WHERE a.bulan = $bulan AND a.tahun = $tahun " . $query_where . " " . $query_sort . " " . $query_limit;
+       
+        return $this->db->query($query);
+    }
+
+	function get_bukti_ppu($data){
+		$kd = $data['kd'];
+		$bulan = $data['bulan'];
+		$tahun = $data['tahun'];
+		
+		$thn = substr($tahun,2,2);
+
+		$kode = $kd.$bulan.$thn;
+		$sql = "SELECT MAX(bukti) AS maxID FROM t_pplsdm WHERE bukti like '$kode%'";
+		
+		$result = $this->db->query($sql)->result();
+		$noUrut = (int) substr($result[0]->maxID, -4);
+		$noUrut++;
+		$newId = sprintf("%04s", $noUrut);
+		$id= $kode.$newId;
+		return $id;
+	}
+
+	function ppu_gaji($data){
+		$bulan = $data['bulan'];
+		$tahun = $data['tahun'];
+		$jenis = $data['jenis'];
+
+		$username = $this->session->userdata('username');
+		$kdprsh = $this->session->userdata('kdprsh');
+		$nama = $this->session->userdata('nama');
+
+		$cekdt = "select * from t_gaji where bulan = $bulan and tahun = $tahun and flag_close=1";
+		$rdt = $this->db->query($cekdt)->num_rows();
+		if($rdt > 0){
+			$query="SELECT ROUND(sum(gaji_netto),2) as  gajinetto FROM t_gaji WHERE bulan = $bulan and tahun = $tahun";
+			$val = $this->db->query($query)->result();
+			$total_gaji = $val[0]->gajinetto;
+
+			$param = array();
+			$param['bulan'] = $bulan;
+			$param['tahun'] = $tahun;
+			$param['kd'] = 'GJT';
+			$bukti = $this->get_bukti_ppu($param);
+			
+			$keterangan = "GAJI PEGAWAI PT.BTP PERIODE $bulan $tahun";
+
+			// --- update t_gaji ---
+			$update = "update t_gaji set bukti_ppu = '$bukti' where bulan = $bulan and tahun = $tahun";
+			$this->db->query($update);
+			
+			// //--- delete ---
+			$hapus = "delete from t_pplsdm where bulan = $bulan and tahun = $tahun and jns_trans = 1";
+			$this->db->query($hapus);
+
+			$data = array(
+				'bukti' => $bukti,
+				'jns_trans' => 1,
+				'unit' => $kdprsh,
+				'jumlah' => $total_gaji,
+				'keterangan' => $keterangan,
+				'nm_pengguna' => $nama,
+				'bulan' => $bulan,
+				'tahun' => $tahun,
+				'user_id' => $this->session->userdata('username'),
+				'kd_pengguna' => $this->session->userdata('username'),
+				);
+			$this->db->insert('t_pplsdm',$data);
+			
+		}
+		else{
+			return 3;
+		}
+	}
+
+	function get_ppu_sdm($data){
+		$bulan = $data['bulan'];
+		$tahun = $data['tahun'];
+		$jenis = $data['jenis'];
+		
+		$query =  $this->db->query("select * from t_pplsdm where bulan = $bulan and tahun = $tahun and jns_trans = '$jenis' and flag_hapus = 0");
+		
+        return $query->result();
+	}
 }

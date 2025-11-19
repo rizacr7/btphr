@@ -151,4 +151,21 @@ class Combo extends CI_Controller {
 
 		echo json_encode($data);
 	}
+
+	function get_ppu_select2()
+	{
+		$term = $this->input->get('term'); // ambil input dari Select2
+		$this->db->like('jns_ppu', $term);
+		$query = $this->db->get('m_jnsppu'); // sesuaikan nama tabel
+
+		$data = [];
+		foreach ($query->result() as $row) {
+			$data[] = [
+				'id' => $row->id_ppu, // value yang dikirim ke form
+				'text' => $row->jns_ppu // teks yang tampil
+			];
+		}
+
+		echo json_encode($data);
+	}
 }

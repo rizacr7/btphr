@@ -2,11 +2,11 @@
 <div class="container">
 <div class="page-inner">
   <div class="page-header">
-    <h3 class="fw-bold mb-3">Proses Gaji Pegawai</h3>
+    <h3 class="fw-bold mb-3">Approval Data</h3>
   </div>
   <div class="card">
     <div class="card-header">
-      	Proses Gaji Pegawai
+      	Approval Data
     </div>
     <div class="card-body">
         <form id="formModal" onsubmit="return false">
@@ -31,8 +31,7 @@
                   </select>
               </div>
               <div class="form-group">
-                <button class="btn btn-info" onclick="prosesgaji()" id="btnproses"> Proses</button>
-                <button class="btn btn-success" onclick="viewgaji()"> View</button>
+                <button class="btn btn-success" onclick="viewdata()"> View</button>
 
                 <div class="spinner-border" role="status" id="loading" style="display:none">
                   <span class="visually-hidden">Loading...</span>
@@ -82,57 +81,64 @@ selectTahun.value = tahunSekarang;
 var bulanSekarang = String(new Date().getMonth() + 1).padStart(2, '0');
 document.getElementById("bulan").value = bulanSekarang;
 
-function prosesgaji(){
-    let bulan = $("#bulan").val();
-    let tahun = $("#tahun").val();
-    dataurl = "<?php echo base_url(); ?>index.php/proses/proses_gajipegawai";
-		$.ajax({
-			url: dataurl,
-			data: "bulan="+bulan+"&tahun="+tahun,
-			type: "POST",
-			beforeSend: function () {
-				$("#loading").show();
-        $("#btnproses").hide();
-        
-			},
-			success: function (res) {
-				if (res == 1) {
-					$("#loading").hide();
-          $("#btnproses").show();
-					Swal.fire({
-            icon: 'success',
-            title: 'Data berhasil diproses',
-            showConfirmButton: false,
-            timer: 1500
-          });
-				}
-        else{
-          $("#loading").hide();
-          $("#btnproses").show();
-					Swal.fire({
-            icon: 'error',
-            title: 'Terjadi kesalahan',
-            text: 'Gagal proses gaji.',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'OK'
-          });
-        }
-			}
-		});
-}
-
-function viewgaji(){
+function viewdata(){
     let bulan = $("#bulan").val();
     let tahun = $("#tahun").val();
     $.ajax({
       data : "bulan="+bulan+"&tahun="+tahun,
       type:"POST",
-      url: "<?php echo base_url(); ?>index.php/proses/tab_gajipegawai",
+      url: "<?php echo base_url(); ?>index.php/approval/tab_approve",
       beforeSend: function () {
       $("#loading").show();
       },
       success: function (res) {
       $("#div_tabel_data").html(res);
+      $("#loading").hide();
+    }
+    }); 
+}
+
+function approvedt(kdjenis){
+    let bulan = $("#bulan").val();
+    let tahun = $("#tahun").val();
+    $.ajax({
+      data : "bulan="+bulan+"&tahun="+tahun+"&kdjenis="+kdjenis,
+      type:"POST",
+      url: "<?php echo base_url(); ?>index.php/approval/approve_doc",
+      beforeSend: function () {
+      $("#loading").show();
+      },
+      success: function (res) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Data berhasil diapprove',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      viewdata()
+      $("#loading").hide();
+    }
+    }); 
+}
+
+function bataldt(kdjenis){
+    let bulan = $("#bulan").val();
+    let tahun = $("#tahun").val();
+    $.ajax({
+      data : "bulan="+bulan+"&tahun="+tahun+"&kdjenis="+kdjenis,
+      type:"POST",
+      url: "<?php echo base_url(); ?>index.php/approval/batal_doc",
+      beforeSend: function () {
+      $("#loading").show();
+      },
+      success: function (res) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Data berhasil dibatalkan',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      viewdata()
       $("#loading").hide();
     }
     }); 

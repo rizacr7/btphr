@@ -2,7 +2,7 @@
 <div class="container">
 <div class="page-inner">
   <div class="page-header">
-    <h3 class="fw-bold mb-3">Lap.Saldo Hutang Sewa</h3>
+    <h3 class="fw-bold mb-3">Lap.Gaji Pegawai</h3>
   </div>
   <div class="card">
     <div class="card-header">
@@ -30,7 +30,6 @@
 
           <div class="col-md-3 col-sm-3 col-xs-12">
             <input type="button" onclick="viewreport()" value="View" class="btn btn-sm btn-info">
-            <input type="button" onclick="sinkronhutang()" value="Sinkron" class="btn btn-sm btn-warning">
             <input type="button" onclick="exceldt()" value="Excel" class="btn btn-sm btn-success">
           </div>
         </div>
@@ -48,13 +47,16 @@
 
 <script type="text/javascript">
 
+  var bulanSekarang = String(new Date().getMonth() + 1).padStart(2, '0');
+  document.getElementById("bulan").value = bulanSekarang;
+
   function viewreport() {
 		var bulan = $('#bulan').val();
 		var tahun = $('#tahun').val();
       $.ajax({
       data : "bulan="+bulan+"&tahun="+tahun,
       type:"POST",
-      url: "<?php echo base_url(); ?>index.php/report/tab_hutang",
+      url: "<?php echo base_url(); ?>index.php/report/tab_gaji",
       beforeSend: function () {
       $("#loading").show();
       },
@@ -65,33 +67,6 @@
     }); 
   }
 	
-  function sinkronhutang(){
-    var bulan = $('#bulan').val();
-    var tahun = $('#tahun').val();
-    dataurl = "<?php echo base_url(); ?>index.php/report/sinkron_hutang";
-    $.ajax({
-        data : 'bulan='+bulan+'&tahun='+tahun,
-        url  : dataurl,
-        type : "POST",
-        beforeSend:function(){
-          $('#loading').show();
-        }, 
-        success : function(res) {
-         
-          $("#div_tabel_data").html(res);
-          $("#loading").hide();
-          Swal.fire({
-            icon: 'success',
-            title: 'Sukses',
-            text: 'Data berhasil disinkron',
-            timer: 1500,
-            showConfirmButton: false
-          });
-          
-        }
-    });
-  }
-
   function exceldt(){
 		var bulan = $('#bulan').val();
 		var tahun = $('#tahun').val();

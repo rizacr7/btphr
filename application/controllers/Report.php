@@ -23,6 +23,7 @@ class Report extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('report_model');
+		$this->load->model('proses_model');
 		$this->load->model('func_global');
 
 		if($this->session->userdata('role') == ""){
@@ -30,10 +31,10 @@ class Report extends CI_Controller {
 		}
     }
 
-    function saldohutang(){
+    function reportgaji(){
         $this->load->view('general/header');
         $this->load->view('general/sidebar');
-        $this->load->view('report/saldo_hutang');
+        $this->load->view('report/lap_gaji');
         $this->load->view('general/footer');
     }
 
@@ -44,18 +45,18 @@ class Report extends CI_Controller {
         $this->load->view('general/footer');
     }
 
-	function tab_hutang(){
+	function tab_gaji(){
 		$bulan = $_POST['bulan'];
 		$tahun = $_POST['tahun'];
 
 		$param = array();
 		$param['bulan'] = $bulan;
 		$param['tahun'] = $tahun;
-		$this->view_saldohutang($param);
+		$this->view_gajipegawai($param);
         
 	}
 
-	function view_saldohutang($data){
+	function view_gajipegawai($data){
 		$bulan = $data['bulan'];
 		$tahun = $data['tahun'];
 
@@ -63,12 +64,26 @@ class Report extends CI_Controller {
 		<table class='table table-bordered table-head-bg-primary table-bordered-bd-primary' width='100%'>
 		<thead>
 			<tr class='info'>
-				<th>Kode Vendor</th>
-				<th>Vendor</th>
-				<th>Saldo Awal</th>
-				<th>Debit</th>
-				<th>Kredit</th>
-				<th>Saldo Akhir</th>
+				<th>No.</th>
+				<th>No.Pegawai</th>
+				<th>Nm.Pegawai</th>
+				<th>Jabatan</th>
+				<th>Level</th>
+				<th>Gapok</th>
+				<th>Tj.Jabatan</th>
+				<th>Tj.Komunikasi</th>
+				<th>Tj.Transport</th>
+				<th>Tj.Konsumsi</th>
+				<th>Tj.Kinerja</th>
+				<th>Tj.Lembur</th>
+				<th>Tj.HR</th>
+				<th>Tj.Kehadiran</th>
+				<th>Gaji Bruto</th>
+				<th>Pot.BPJS Kesehatan</th>
+				<th>Pot.BPJS TK</th>
+				<th>Pot.BPJS Pensiun</th>
+				<th>Total Potongan</th>
+				<th>Gaji Netto</th>
 			</tr>
 		</thead>
 		<tbody>";
@@ -77,52 +92,57 @@ class Report extends CI_Controller {
 		$param = array();
 		$param['bulan'] = $bulan;
 		$param['tahun'] = $tahun;
-        $DataResult = $this->report_model->get_saldohutang($param);
-		$Param  = array();
-		$Param['DataResult'] = $DataResult;
-		
-		$sumsaldoawal=0;
-		$sumdebit=0;
-		$sumkredit=0;
-		$sumsaldoakhir=0;
-        foreach ($DataResult as $dt) {
+		$DataResult = $this->proses_model->get_data_gaji("", "", "", 0, 0,$param);
+		$totalbruto=0;
+		$totalnetto=0;
+		$totalPotongan=0;
+		foreach ($DataResult->result_array() as $key => $value) {
+			$sumPotongan = $value['pot_bpjs'] + $value['pot_bpjs_jp'] + $value['pot_bpjs_tk'];
 
             echo "<tr>
-				<td>" . $dt->kd_vendor . "</td>
-				<td>" . $dt->nm_vendor . "</td>
-				<td style=text-align:right>" . $this->func_global->duit($dt->saldo_awal) . "</td>
-				<td style=text-align:right>" . $this->func_global->duit($dt->debit) . "</td>
-				<td style=text-align:right>" . $this->func_global->duit($dt->kredit) . "</td>
-				<td style=text-align:right>" . $this->func_global->duit($dt->saldo_akhir) . "</td>
+				<td>" . $no . "</td>
+				<td>" . $value['no_peg'] . "</td>
+				<td>" . $value['na_peg'] . "</td>
+				<td>" . $value['nm_jab'] . "</td>
+				<td>" . $value['level'] . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['gapok']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_jabatan']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_komunikasi']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_transport']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_konsumsi']) . "</td>
+
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_kinerja']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_lembur']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_hr']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['tj_kehadiran']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['gaji_bruto']) . "</td>
+
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['pot_bpjs']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['pot_bpjs_tk']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['pot_bpjs_jp']) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($sumPotongan) . "</td>
+				<td style='text-align:right'>" . $this->func_global->formatrp($value['gaji_netto']) . "</td>
+
 			</tr>";
             $no++;
-			$sumsaldoawal+=$dt->saldo_awal;
-			$sumdebit+=$dt->debit;
-			$sumkredit+=$dt->kredit;
-			$sumsaldoakhir+=$dt->saldo_akhir;
+
+			$totalbruto +=$value['gaji_bruto'];
+			$totalnetto +=$value['gaji_netto'];
+			$totalPotongan +=$sumPotongan;
         }
 		
         echo "
 			<tr>
-				<td colspan='2'><b>TOTAL</b></td>
-				<td style=text-align:right><b>" . $this->func_global->duit($sumsaldoawal) . "</b></td>
-				<td style=text-align:right><b>" . $this->func_global->duit($sumdebit) . "</b></td>
-				<td style=text-align:right><b>" . $this->func_global->duit($sumkredit) . "</b></td>
-				<td style=text-align:right><b>" . $this->func_global->duit($sumsaldoakhir) . "</b></td>
+				<td colspan='14'><b>TOTAL</b></td>
+				<td style=text-align:right><b>" . $this->func_global->duit($totalbruto) . "</b></td>
+				<td style=text-align:right></td>
+				<td style=text-align:right></td>
+				<td style=text-align:right></td>
+				<td style=text-align:right><b>" . $this->func_global->duit($totalPotongan) . "</b></td>
+				<td style=text-align:right><b>" . $this->func_global->duit($totalnetto) . "</b></td>
 			</tr>
 		</tbody>
 		</table>";
-	}
-
-	function sinkron_hutang(){
-		$bulan = $_POST['bulan'];
-		$tahun = $_POST['tahun'];
-
-		$param = array();
-		$param['bulan'] = $bulan;
-		$param['tahun'] = $tahun;
-		$SinkronSaldo = $this->report_model->sinkron_saldo_hutang($param);
-		
 	}
 
 	function excel_saldohutang(){
