@@ -22,6 +22,30 @@ class Report_model extends CI_Model  {
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
 
+	function get_data_bpjskesehatan($data){
+		$query = "SELECT a.no_peg,c.na_peg,b.* FROM t_gaji a 
+		LEFT JOIN bpjs_kesehatan b ON a.no_peg = b.no_peg AND b.bulan = ".$data['bulan']." and b.tahun = ".$data['tahun']."
+		LEFT JOIN mas_peg c ON a.no_peg = c.no_peg
+		WHERE a.bulan = ".$data['bulan']." and a.tahun = ".$data['tahun']."";
+		return $this->db->query($query);
+	}
+
+	function get_data_bpjstk($data){
+		$query = "SELECT a.no_peg,c.na_peg,b.* FROM t_gaji a 
+		LEFT JOIN bpjs_tk b ON a.no_peg = b.no_peg AND b.bulan = ".$data['bulan']." and b.tahun = ".$data['tahun']."
+		LEFT JOIN mas_peg c ON a.no_peg = c.no_peg
+		WHERE a.bulan = ".$data['bulan']." and a.tahun = ".$data['tahun']."";
+		return $this->db->query($query);
+	}
+
+	function get_data_bpjsjp($data){
+		$query = "SELECT a.no_peg,c.na_peg,b.* FROM t_gaji a 
+		LEFT JOIN bpjs_jp b ON a.no_peg = b.no_peg AND b.bulan = ".$data['bulan']." and b.tahun = ".$data['tahun']."
+		LEFT JOIN mas_peg c ON a.no_peg = c.no_peg
+		WHERE a.bulan = ".$data['bulan']." and a.tahun = ".$data['tahun']."";
+		return $this->db->query($query);
+	}
+
 	function get_saldohutang($data){
 		$bulan = $data['bulan'];
 		$tahun = $data['tahun'];

@@ -2,7 +2,7 @@
 <div class="container">
 <div class="page-inner">
   <div class="page-header">
-    <h3 class="fw-bold mb-3">Lap.Gaji Pegawai</h3>
+    <h3 class="fw-bold mb-3">Lap.BPJS Pegawai</h3>
   </div>
   <div class="card">
     <div class="card-header">
@@ -26,6 +26,14 @@
 
           <div class="col-md-3 col-sm-3 col-xs-12">
               <input type="text" placeholder="TAHUN" name='tahun' id='tahun' class="form-control" required="true" onkeyup="uppercase(this)" value="<?php echo date("Y")?>">
+          </div>
+
+          <div class="col-md-3 col-sm-3 col-xs-12">
+              <select class="form-select form-control" name="jenis" id="jenis">
+                <option value="1">BPJS Kesehatan</option>
+                <option value="2">BPJS Tenaga Kerja</option>
+                <option value="3">BPJS Pensiun</option>
+              </select>
           </div>
 
           <div class="col-md-3 col-sm-3 col-xs-12">
@@ -53,10 +61,11 @@
   function viewreport() {
 		var bulan = $('#bulan').val();
 		var tahun = $('#tahun').val();
+    var jenis = $('#jenis').val();
       $.ajax({
-      data : "bulan="+bulan+"&tahun="+tahun,
+      data : "bulan="+bulan+"&tahun="+tahun+"&jenis="+jenis,
       type:"POST",
-      url: "<?php echo base_url(); ?>index.php/report/tab_gaji",
+      url: "<?php echo base_url(); ?>index.php/report/tab_bpjs",
       beforeSend: function () {
       $("#loading").show();
       },
@@ -70,7 +79,8 @@
   function exceldt(){
 		var bulan = $('#bulan').val();
 		var tahun = $('#tahun').val();
-		window.open("<?php echo base_url(); ?>index.php/report/excel_gaji?bulan="+bulan+"&tahun="+tahun);
+    var jenis = $('#jenis').val();
+		window.open("<?php echo base_url(); ?>index.php/report/excel_bpjs?bulan="+bulan+"&tahun="+tahun+"&jenis="+jenis);
 	}
 
 </script>

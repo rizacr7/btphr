@@ -85,12 +85,15 @@ class Proses_model extends CI_Model  {
 
 			$pot_bpjs_peg = round($total_gdp * 0.01,2);
 			$pot_bpjs_prsh = round($total_gdp * 0.04,2);
+			$totalbpjs = $pot_bpjs_peg + $pot_bpjs_prsh;
 
 			$pot_jamsostek_peg = round($gdp_jamsostek * 0.01,2);
 			$pot_jamsostek_prsh = round($gdp_jamsostek * 0.0524,2);
+			$totaljamsostek = $pot_jamsostek_peg + $pot_jamsostek_prsh;
 
 			$pot_pensiun_peg = round($total_gdp_pensiun * 0.01,2);
 			$pot_pensiun_prsh = round($total_gdp_pensiun * 0.02,2);
+			$totalpensiun = $pot_pensiun_peg + $pot_pensiun_prsh;
 
 			$gajibruto = $gapok + $tj_jabatan + $val['tj_komunikasi'] + $val['tj_transport'] + $val['tj_konsumsi'] + $val['tj_kinerja'] + $val['tj_lembur'] + $val['tj_kehadiran'] + $val['tj_hr'];
 			$gajinetto = $gajibruto - $pot_bpjs_peg - $pot_jamsostek_peg - $pot_pensiun_peg;
@@ -121,6 +124,46 @@ class Proses_model extends CI_Model  {
 				'user_id' => $username
 			);
 			$this->db->insert('t_gaji', $data);
+
+			//---bpjs kesehatan---
+			$data = array(
+				'bulan' =>$bulan,
+				'tahun' =>$tahun,
+				'no_peg'=>$no_peg,
+				'kd_prsh'=>$kd_prsh,
+				'gdp'=>$gdp_jamsostek,
+				'pot_karyawan' => $pot_bpjs_peg,
+				'pot_perusahaan' => $pot_bpjs_prsh,
+				'total_bpjs' =>$totalbpjs
+			);
+			$this->db->insert('bpjs_kesehatan', $data);
+
+
+			//---bpjs tenaga kerja---
+			$data = array(
+				'bulan' =>$bulan,
+				'tahun' =>$tahun,
+				'no_peg'=>$no_peg,
+				'kd_prsh'=>$kd_prsh,
+				'gdp'=>$total_gdp,
+				'pot_karyawan' => $pot_jamsostek_peg,
+				'pot_perusahaan' => $pot_jamsostek_prsh,
+				'total_bpjs' =>$totaljamsostek
+			);
+			$this->db->insert('bpjs_tk', $data);
+
+			//---bpjs pensiun---
+			$data = array(
+				'bulan' =>$bulan,
+				'tahun' =>$tahun,
+				'no_peg'=>$no_peg,
+				'kd_prsh'=>$kd_prsh,
+				'gdp'=>$total_gdp_pensiun,
+				'pot_karyawan' => $pot_pensiun_peg,
+				'pot_perusahaan' => $pot_pensiun_prsh,
+				'total_bpjs' =>$totalpensiun
+			);
+			$this->db->insert('bpjs_jp', $data);
 
 		}
 	}
@@ -153,83 +196,5 @@ class Proses_model extends CI_Model  {
         return $this->db->query($query);
     }
 
-	function get_bukti_ppu($data){
-		$kd = $data['kd'];
-		$bulan = $data['bulan'];
-		$tahun = $data['tahun'];
-		
-		$thn = substr($tahun,2,2);
-
-		$kode = $kd.$bulan.$thn;
-		$sql = "SELECT MAX(bukti) AS maxID FROM t_pplsdm WHERE bukti like '$kode%'";
-		
-		$result = $this->db->query($sql)->result();
-		$noUrut = (int) substr($result[0]->maxID, -4);
-		$noUrut++;
-		$newId = sprintf("%04s", $noUrut);
-		$id= $kode.$newId;
-		return $id;
-	}
-
-	function ppu_gaji($data){
-		$bulan = $data['bulan'];
-		$tahun = $data['tahun'];
-		$jenis = $data['jenis'];
-
-		$username = $this->session->userdata('username');
-		$kdprsh = $this->session->userdata('kdprsh');
-		$nama = $this->session->userdata('nama');
-
-		$cekdt = "select * from t_gaji where bulan = $bulan and tahun = $tahun and flag_close=1";
-		$rdt = $this->db->query($cekdt)->num_rows();
-		if($rdt > 0){
-			$query="SELECT ROUND(sum(gaji_netto),2) as  gajinetto FROM t_gaji WHERE bulan = $bulan and tahun = $tahun";
-			$val = $this->db->query($query)->result();
-			$total_gaji = $val[0]->gajinetto;
-
-			$param = array();
-			$param['bulan'] = $bulan;
-			$param['tahun'] = $tahun;
-			$param['kd'] = 'GJT';
-			$bukti = $this->get_bukti_ppu($param);
-			
-			$keterangan = "GAJI PEGAWAI PT.BTP PERIODE $bulan $tahun";
-
-			// --- update t_gaji ---
-			$update = "update t_gaji set bukti_ppu = '$bukti' where bulan = $bulan and tahun = $tahun";
-			$this->db->query($update);
-			
-			// //--- delete ---
-			$hapus = "delete from t_pplsdm where bulan = $bulan and tahun = $tahun and jns_trans = 1";
-			$this->db->query($hapus);
-
-			$data = array(
-				'bukti' => $bukti,
-				'jns_trans' => 1,
-				'unit' => $kdprsh,
-				'jumlah' => $total_gaji,
-				'keterangan' => $keterangan,
-				'nm_pengguna' => $nama,
-				'bulan' => $bulan,
-				'tahun' => $tahun,
-				'user_id' => $this->session->userdata('username'),
-				'kd_pengguna' => $this->session->userdata('username'),
-				);
-			$this->db->insert('t_pplsdm',$data);
-			
-		}
-		else{
-			return 3;
-		}
-	}
-
-	function get_ppu_sdm($data){
-		$bulan = $data['bulan'];
-		$tahun = $data['tahun'];
-		$jenis = $data['jenis'];
-		
-		$query =  $this->db->query("select * from t_pplsdm where bulan = $bulan and tahun = $tahun and jns_trans = '$jenis' and flag_hapus = 0");
-		
-        return $query->result();
-	}
+	
 }

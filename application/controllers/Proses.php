@@ -23,6 +23,7 @@ class Proses extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('proses_model');
+		$this->load->model('ppu_model');
 		$this->load->model('func_global');
 		$this->load->library("pdf");
 
@@ -59,6 +60,15 @@ class Proses extends CI_Controller {
 			
 				$reset = "delete from t_gaji where bulan = '$bulan' and tahun = '$tahun'";
 				$this->db->query($reset);
+
+				$delbpjs = "delete from bpjs_kesehatan where bulan = '$bulan' and tahun = '$tahun'";
+				$this->db->query($delbpjs);
+
+				$delbpjstk = "delete from bpjs_tk where bulan = '$bulan' and tahun = '$tahun'";
+				$this->db->query($delbpjstk);
+
+				$delbpjsjp = "delete from bpjs_jp where bulan = '$bulan' and tahun = '$tahun'";
+				$this->db->query($delbpjsjp);
 
 				$param = array();
 				$param['bulan'] = $bulan;
@@ -184,7 +194,10 @@ class Proses extends CI_Controller {
 		$param['jenis'] = $jenis;
 
 		if($jenis == 1){
-			$Datappu = $this->proses_model->ppu_gaji($param);
+			$Datappu = $this->ppu_model->ppu_gaji($param);
+		}
+		else if($jenis == 2 || $jenis == 3 || $jenis == 4){
+			$Datappu = $this->ppu_model->ppu_bpjs($param);
 		}
 
 		if($Datappu == 3){
@@ -225,7 +238,7 @@ class Proses extends CI_Controller {
 		$param['tahun'] = $tahun;
 		$param['jenis'] = $jenis;
 		
-		$DataResult = $this->proses_model->get_ppu_sdm($param);
+		$DataResult = $this->ppu_model->get_ppu_sdm($param);
 		$Param  = array();
 		$Param['DataResult'] = $DataResult;
 		
