@@ -23,6 +23,7 @@ class Combo extends CI_Controller {
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->model('master_model');
+		$this->db_hrd20 = $this->load->database("hrd20", TRUE);
     }
 
 	public function get_jabatan_select2()
@@ -167,5 +168,42 @@ class Combo extends CI_Controller {
 		}
 
 		echo json_encode($data);
+	}
+
+	function combo_unit(){
+        $value         = isset($_REQUEST['value']) ? $_REQUEST['value'] : "";
+        $q             = isset($_REQUEST['q']) ? $_REQUEST['q'] : $value;
+        $cari['value'] = $q;
+		
+		$sql = "select * from m_unit where is_del = 0 and (kd_unit like '$q%' or nm_unit like '%$q%')";
+		$data = $this->db_hrd20->query($sql)->result_array();
+
+        foreach ($data as $key => $value) {
+            $value['id']   = $value['kd_unit'];
+            $value['text'] = $value['kd_unit']."|".$value['nm_unit'];
+
+            $arrData['results'][] = $value;
+        }
+
+        echo json_encode($arrData);
+	}
+
+	function combo_level_btp(){
+        $value         = isset($_REQUEST['value']) ? $_REQUEST['value'] : "";
+        $q             = isset($_REQUEST['q']) ? $_REQUEST['q'] : $value;
+        $cari['value'] = $q;
+		
+		$sql = "SELECT b.`id_level`,b.`ket_level` FROM mas_peg a 
+		LEFT JOIN level_maspeg b ON a.`kd_level` = b.`id_level` 
+		WHERE a.`kd_jab` = '106' AND a.`kd_level` <> 0 AND b.ket_level like '%$q%' GROUP BY a.`kd_level`";
+		$data = $this->db_hrd20->query($sql)->result_array();
+        foreach ($data as $key => $value) {
+            $value['id']   = $value['id_level'];
+            $value['text'] = $value['id_level']."|".$value['ket_level'];
+
+            $arrData['results'][] = $value;
+        }
+
+        echo json_encode($arrData);
 	}
 }
