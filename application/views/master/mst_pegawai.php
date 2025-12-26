@@ -247,6 +247,15 @@
 		});
 	}
 
+  $("#kd_unit").select2({
+		width: '100%',
+		ajax: {
+			url: "<?php echo base_url(); ?>index.php/combo/combo_unit",
+			dataType: 'json',
+			delay: 500
+		}
+	});
+
   function simpan() {
     const form = document.getElementById('formModal');
     const inputs = form.querySelectorAll('input, select, textarea');

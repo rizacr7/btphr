@@ -188,6 +188,24 @@ class Combo extends CI_Controller {
         echo json_encode($arrData);
 	}
 
+	function combo_level(){
+        $value         = isset($_REQUEST['value']) ? $_REQUEST['value'] : "";
+        $q             = isset($_REQUEST['q']) ? $_REQUEST['q'] : $value;
+        $cari['value'] = $q;
+		
+		$sql = "select * from level_maspeg where id_level is not null and ket_level like '%$q%'";
+		$data = $this->db_hrd20->query($sql)->result_array();
+
+        foreach ($data as $key => $value) {
+            $value['id']   = $value['id_level'];
+            $value['text'] = $value['id_level']."|".$value['ket_level'];
+
+            $arrData['results'][] = $value;
+        }
+
+        echo json_encode($arrData);
+	}
+
 	function combo_level_btp(){
         $value         = isset($_REQUEST['value']) ? $_REQUEST['value'] : "";
         $q             = isset($_REQUEST['q']) ? $_REQUEST['q'] : $value;
@@ -200,6 +218,24 @@ class Combo extends CI_Controller {
         foreach ($data as $key => $value) {
             $value['id']   = $value['id_level'];
             $value['text'] = $value['id_level']."|".$value['ket_level'];
+
+            $arrData['results'][] = $value;
+        }
+
+        echo json_encode($arrData);
+	}
+
+	function combo_pajak(){
+        $value         = isset($_REQUEST['value']) ? $_REQUEST['value'] : "";
+        $q             = isset($_REQUEST['q']) ? $_REQUEST['q'] : $value;
+        $cari['value'] = $q;
+		
+		$sql = "select * from m_ptkp where kode is not null";
+		$data = $this->db->query($sql)->result_array();
+
+        foreach ($data as $key => $value) {
+            $value['id']   = $value['kode'];
+            $value['text'] = $value['kode']."|".$value['keterangan'];
 
             $arrData['results'][] = $value;
         }

@@ -11,6 +11,7 @@ class Master_model extends CI_Model  {
 	public function __construct() {
         $this->load->database();
 		$this->load->model('func_global');
+		$this->db_hrd20 = $this->load->database("hrd20", TRUE);
     }
 	/**
 	 * Index Page for this controller.
@@ -212,12 +213,23 @@ class Master_model extends CI_Model  {
 		$bln = $str[1];
 		$day = $str[2];
 		$tahun = substr($thn,2,2);
-		
+
 		$code = $bln;
-		$kode = $code.$tahun;
-		$sql = "SELECT MAX(no_peg) AS maxID FROM mas_peg WHERE no_peg like '$kode%'";
+		if($status_peg == "OS"){
+			$code = "OS";
+		}
 		
-		$result = $this->db->query($sql)->result();
+		if($status_peg == "OS"){
+			$kode = $code.$tahun;
+			$sql = "SELECT MAX(no_peg) AS maxID FROM mas_peg_pengajuan WHERE no_peg like '$kode%'";
+			$result = $this->db_hrd20->query($sql)->result();
+		}
+		else{
+			$kode = $code.$tahun;
+			$sql = "SELECT MAX(no_peg) AS maxID FROM mas_peg WHERE no_peg like '$kode%'";
+			$result = $this->db->query($sql)->result();
+		}
+
 		$noUrut = (int) substr($result[0]->maxID, -3);
 		$noUrut++;
 		$newId = sprintf("%03s", $noUrut);
