@@ -72,6 +72,20 @@ class Os_model extends CI_Model{
             ->result();
     }
 
+    function get_pegawai_os_by_id($id_pegawai){
+        $querymaspeg = "select a.*,b.nm_unit,c.nm_statpeg,d.nm_jab,e.nm_job,DATE_FORMAT(a.tgl_masuk,'%d-%m-%Y') AS tgl_msk,DATE_FORMAT(a.tgl_dinas,'%d-%m-%Y') AS tgl_dns,DATE_FORMAT(a.tgl_lahir,'%d-%m-%Y') AS tgl_lhr,DATE_FORMAT(a.tgl_akhir,'%d-%m-%Y') AS tglakhir,DATE_FORMAT(a.tgl_kontrak,'%d-%m-%Y') AS tglkontrak,f.keterangan as ket_ptkp,g.ket_level,'P02' as kd_perusahaan from mas_peg a 
+		left join m_unit b on a.kd_unit = b.kd_unit  
+		left join m_statuspegawai c on a.status_peg = c.kd_statpeg
+		left join m_jabatan d on a.kd_jab = d.kd_jab
+		left join m_jobdesc e on a.kd_job = e.kd_job
+		left join m_ptkp f on a.status_pajak = f.kode
+		left join level_maspeg g on a.kd_level = g.id_level
+		where a.id_pegawai = '".$id_pegawai."'";
+        
+        $query = $this->db_hrd20->query($querymaspeg);
+        return $query->row_array();
+    }
+
     function simpan_pegawai_os($data){
 
         return $this->db->insert('mas_peg_pengajuan', $data);

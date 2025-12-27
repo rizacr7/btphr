@@ -292,33 +292,62 @@
   }
 
   function edit() {
-    var table = $('#table_jabatan').DataTable();
+    var table = $('#table_pegawai_os').DataTable();
     var selectedData = table.row({ selected: true }).data();
 
     if (!selectedData) {
       Swal.fire({
         icon: 'warning',
         title: 'Tidak ada data terpilih',
-        text: 'Silakan pilih data kendaraan yang akan diedit.',
+        text: 'Silakan pilih data pegawai yang akan diedit.',
         confirmButtonColor: '#3085d6',
         confirmButtonText: 'OK'
       });
       return;
     }
 
-    var id_jab = selectedData[1];
-    var kd_jab = selectedData[2];
-    var nm_jab = selectedData[3];
-   
-    $('#id_jab').val(id_jab);
-    $('#kd_jab').val(kd_jab);
-    $('#nm_jab').val(nm_jab);
-   
-    $('#myModal').modal('show');
-    $('#myModal').on('shown.bs.modal', function () {
-      // Bisa tambahkan fokus ke field tertentu kalau mau
-      $('#kd_jab').focus();
+    var id_pegawai = selectedData[1];
+
+    $.ajax({
+      url: '<?php echo base_url(); ?>index.php/maspegos/get_pegawai_os',
+      type: 'POST',
+      data: { id_pegawai: id_pegawai },
+      success: function(response) {
+        var data = JSON.parse(response);
+
+        // Isi form dengan data yang diperoleh
+        $('#id_pegawai').val(data.id_pegawai);
+        $('#no_peg').val(data.no_peg);
+        $('#na_peg').val(data.na_peg);
+        $('#tgl_masuk').val(data.tgl_msk);
+        
+        $('#alamat').val(data.alamat);
+        $('#tmpt_lahir').val(data.tmpt_lahir);
+        $('#no_ktp').val(data.no_ktp);
+        $('#pendidikan').val(data.pendidikan);
+        $('#email').val(data.email);
+        $('#bank').val(data.bank);
+        $('#agama').val(data.agama);
+        $('#tgl_kontrak').val(data.tglkontrak);
+        $('#tgl_akhir_kontrak').val(data.tglakhir);
+        $('#npwp').val(data.npwp);
+        $('#kd_perusahaan').val(data.kd_perusahaan).trigger('change');
+        
+        $('#tgl_lahir').val(data.tgl_lhr);
+        $('#jns_kel').val(data.sex);
+        $('#nm_ibu').val(data.nm_ibu);
+        $('#no_rek').val(data.no_rek);
+        $('#no_hp').val(data.no_hp);
+        $('#status_pajak').val(data.status_pajak);
+        $('#ket_pendidikan').val(data.ket_pendidikan);
+
+        $("#kd_unit").empty().append('<option value="'+data.kd_unit+'">'+data.kd_unit+"|"+data.nm_unit+'</option>').val(data.kd_unit).trigger('change');
+
+        $("#kd_level").empty().append('<option value="'+data.kd_level+'">'+data.kd_level+"|"+data.ket_level+'</option>').val(data.kd_level).trigger('change');
+  }
     });
+
+    $('#myModal').modal('show');
   }
 
   function simpan() {

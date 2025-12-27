@@ -161,6 +161,12 @@ class Maspegos extends CI_Controller {
 		</script>";
     }
 
+	function get_pegawai_os(){
+		$id_pegawai = $this->input->post('id_pegawai');
+		$data_pegawai = $this->os_model->get_pegawai_os_by_id($id_pegawai);
+
+		echo json_encode($data_pegawai);
+	}
 	function simpan_data_os() {
 		$username = $this->session->userdata('username');
 		$data = $this->input->post();
@@ -171,38 +177,61 @@ class Maspegos extends CI_Controller {
 			return;
 		}
 
-		$insert_data = [
-			'no_peg'      => $this->input->post('no_peg'),
-			'na_peg'      => $this->input->post('na_peg'),
-			'tgl_masuk'   => $this->func_global->tgl_dsql($this->input->post('tgl_masuk')),
-			'alamat'      => $this->input->post('alamat'),
-			'no_ktp'      => $this->input->post('no_ktp'),
-			'kd_level'    => $this->input->post('kd_level'),
-			'kd_perusahaan' => $this->input->post('kd_perusahaan'),
-			'kd_unit'     => $this->input->post('kd_unit'),
-			'tgl_lahir'   => $this->func_global->tgl_dsql($this->input->post('tgl_lahir')),
-			'tmpt_lahir'  => $this->input->post('tmpt_lahir'),
-			'sex'     => $this->input->post('jns_kel'),
-			'status_pajak' => $this->input->post('status_pajak'),
-			'email'       => $this->input->post('email'),
-			'no_rek'       => $this->input->post('no_rek'),
-			'pendidikan'       => $this->input->post('pendidikan'),
-			'ket_pendidikan'       => $this->input->post('ket_pendidikan'),
-			'kd_jab'       => '106',
-			'kd_golongan'       => '000',
-			'status_peg'       => '07',
-			'tgl_kontrak' => $this->func_global->tgl_dsql($this->input->post('tgl_kontrak')),
-			'tgl_akhir' => $this->func_global->tgl_dsql($this->input->post('tgl_akhir_kontrak')),
-			'npwp'        => $this->input->post('npwp'),
-			'tgl_update'   => date("Y-m-d H:i:s")
-		];
-
 		if ($data['id_pegawai'] == '') {
+			$insert_data = [
+				'no_peg'      => $this->input->post('no_peg'),
+				'na_peg'      => $this->input->post('na_peg'),
+				'tgl_masuk'   => $this->func_global->tgl_dsql($this->input->post('tgl_masuk')),
+				'alamat'      => $this->input->post('alamat'),
+				'no_ktp'      => $this->input->post('no_ktp'),
+				'kd_level'    => $this->input->post('kd_level'),
+				'kd_perusahaan' => $this->input->post('kd_perusahaan'),
+				'kd_unit'     => $this->input->post('kd_unit'),
+				'tgl_lahir'   => $this->func_global->tgl_dsql($this->input->post('tgl_lahir')),
+				'tmpt_lahir'  => $this->input->post('tmpt_lahir'),
+				'sex'     => $this->input->post('jns_kel'),
+				'status_pajak' => $this->input->post('status_pajak'),
+				'email'       => $this->input->post('email'),
+				'no_rek'       => $this->input->post('no_rek'),
+				'pendidikan'       => $this->input->post('pendidikan'),
+				'ket_pendidikan'       => $this->input->post('ket_pendidikan'),
+				'kd_jab'       => '106',
+				'kd_golongan'  => '000',
+				'status_peg'   => '07',
+				'tgl_kontrak' => $this->func_global->tgl_dsql($this->input->post('tgl_kontrak')),
+				'tgl_akhir' => $this->func_global->tgl_dsql($this->input->post('tgl_akhir_kontrak')),
+				'npwp'        => $this->input->post('npwp'),
+				'tgl_update'   => date("Y-m-d H:i:s")
+			];
             // Simpan data baru
             $result = $this->os_model->simpan_pegawai_os($insert_data);
         } else {
+			$insert_data = [
+				'no_peg'      => $this->input->post('no_peg'),
+				'na_peg'      => $this->input->post('na_peg'),
+				'tgl_masuk'   => $this->func_global->tgl_dsql($this->input->post('tgl_masuk')),
+				'alamat'      => $this->input->post('alamat'),
+				'no_ktp'      => $this->input->post('no_ktp'),
+				'kd_level'    => $this->input->post('kd_level'),
+				'kd_unit'     => $this->input->post('kd_unit'),
+				'tgl_lahir'   => $this->func_global->tgl_dsql($this->input->post('tgl_lahir')),
+				'tmpt_lahir'  => $this->input->post('tmpt_lahir'),
+				'sex'     => $this->input->post('jns_kel'),
+				'status_pajak' => $this->input->post('status_pajak'),
+				'email'       => $this->input->post('email'),
+				'no_rek'       => $this->input->post('no_rek'),
+				'pendidikan'       => $this->input->post('pendidikan'),
+				'ket_pendidikan'       => $this->input->post('ket_pendidikan'),
+				'kd_jab'       => '106',
+				'kd_golongan'  => '000',
+				'status_peg'   => '07',
+				'tgl_kontrak' => $this->func_global->tgl_dsql($this->input->post('tgl_kontrak')),
+				'tgl_akhir' => $this->func_global->tgl_dsql($this->input->post('tgl_akhir_kontrak')),
+				'npwp'        => $this->input->post('npwp'),
+				'tgl_update'   => date("Y-m-d H:i:s")
+			];
             // Update data
-            $result = $this->_update_pegawai_os($data['id_pegawai'], $insert_data);
+            $result = $this->update_pegawai_os($data['id_pegawai'], $insert_data);
         }
 
         if ($result) {
@@ -211,6 +240,11 @@ class Maspegos extends CI_Controller {
 			echo 2;
 		}		
     }
+
+	function update_pegawai_os($id_pegawai, $data) {
+		$this->db_hrd20->where('id_pegawai', $id_pegawai);
+		return $this->db_hrd20->update('mas_peg', $data);
+	}
 
 	function hapus_pengajuan_os() {
 		$id_pegawai = $this->input->post('id_pegawai');
