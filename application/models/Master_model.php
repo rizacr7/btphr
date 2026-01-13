@@ -250,6 +250,7 @@ class Master_model extends CI_Model  {
 		$this->db->join('m_level_jabatan c', 'a.kd_leveljab = c.kd_leveljab', 'left');
 		$this->db->join('m_jabatan d', 'c.kd_jab = d.kd_jab', 'left');
 		$this->db->where('a.flag_keluar', 0);
+		$this->db->where_not_in('a.status_peg', 'S04');
 		// 🔍 pencarian global
 		$i = 0;
 		foreach ($this->column_search as $item) {
